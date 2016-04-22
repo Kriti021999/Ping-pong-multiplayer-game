@@ -1,9 +1,14 @@
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
-public class MainGame extends JFrame {
+@SuppressWarnings("serial")
+public class MainGame extends JFrame implements Commons{
 
-    public MainGame() {
+    /**
+	 * 
+	 */
+
+	public MainGame() {
         
         initUI();
     }
@@ -11,13 +16,13 @@ public class MainGame extends JFrame {
     private void initUI() {
         
         add(new Board());
+       
         
-        setSize(800, 800);
-        setResizable(false);
-        
-        setTitle("Pong!");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(Commons.WIDTH, Commons.HEIGTH);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setResizable(false);
+        setVisible(true);
     }
 
     public static void main(String[] args) {

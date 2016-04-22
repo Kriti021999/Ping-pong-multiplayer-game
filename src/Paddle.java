@@ -2,43 +2,41 @@ import java.awt.Image;
 import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
-public class Paddle {
+import java.awt.event.KeyEvent;
+import javax.swing.ImageIcon;
+
+public class Paddle extends Sprite implements Commons {
 
     private int dx;
-    private int dy;
-    private int x;
-    private int y;
-    private Image image;
 
     public Paddle() {
-        
-        initPaddle();
-    }
-    
-    private void initPaddle() {
-        
+
         ImageIcon ii = new ImageIcon("paddle.png");
         image = ii.getImage();
-        x = 40;
-        y = 700;        
+
+        i_width = image.getWidth(null);
+        i_heigth = image.getHeight(null);
+
+        resetState();
     }
 
+    public void move(Ball b) {
+    
+    	if(b.getX() < x){
+           dx =-1;
+    	}
+    	if(b.getX() > x){
+    		dx= 1;
+    	}
+        if (x <= 0) {
+            x = 0;
+        }
 
-    public void move() {
-        x += dx;
-        //y += dy;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public Image getImage() {
-        return image;
+        if (x >= WIDTH - i_width) {
+            x = WIDTH - i_width;
+        }
+        
+    	x += dx;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -52,18 +50,10 @@ public class Paddle {
         if (key == KeyEvent.VK_RIGHT) {
             dx = 1;
         }
-
-        if (key == KeyEvent.VK_UP) {
-            dy = -1;
-        }
-
-        if (key == KeyEvent.VK_DOWN) {
-            dy = 1;
-        }
     }
 
     public void keyReleased(KeyEvent e) {
-        
+
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
@@ -73,13 +63,11 @@ public class Paddle {
         if (key == KeyEvent.VK_RIGHT) {
             dx = 0;
         }
+    }
 
-        if (key == KeyEvent.VK_UP) {
-            dy = 0;
-        }
+    private void resetState() {
 
-        if (key == KeyEvent.VK_DOWN) {
-            dy = 0;
-        }
+        x = INIT_PADDLE_X;
+        y = INIT_PADDLE_Y;
     }
 }
