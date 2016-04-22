@@ -1,3 +1,4 @@
+package components;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 
@@ -19,7 +20,7 @@ public class MainGame extends JFrame implements Commons{
        
         
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(Commons.WIDTH, Commons.HEIGTH);
+        setSize(Commons.WIDTH, Commons.HEIGHT);
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);

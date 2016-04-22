@@ -1,3 +1,4 @@
+package components;
 import java.awt.Image;
 import java.awt.Rectangle;
 
@@ -6,7 +7,7 @@ public class Sprite {
     protected int x;
     protected int y;
     protected int i_width;
-    protected int i_heigth;
+    protected int i_height;
     protected Image image;
 
     public void setX(int x) {
@@ -30,7 +31,7 @@ public class Sprite {
     }
 
     public int getHeight() {
-        return i_heigth;
+        return i_height;
     }
 
     Image getImage() {

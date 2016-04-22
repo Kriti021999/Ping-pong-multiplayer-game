@@ -1,3 +1,4 @@
+package components;
 import javax.swing.ImageIcon;
 
 public class Ball extends Sprite implements Commons {
@@ -14,31 +15,36 @@ public class Ball extends Sprite implements Commons {
         image = ii.getImage();
 
         i_width = image.getWidth(null);
-        i_heigth = image.getHeight(null);
+        i_height = image.getHeight(null);
 
         resetState();
     }
 
     public void move() {
         
-        x += xdir;
-        y += ydir;
-
-        if (x == 0) {
+        x += (xdir*1);
+        y += (ydir*1);
+        
+        /*
+        * Setting the direction of movement of the ball i.e., xdir and ydir
+        * based on the collision condition with the wall
+        */
+        if (x <= 0) {
             setXDir(1);
         }
 
-        if (x == WIDTH - i_width) {
+        if (x >= WIDTH - i_width) {
             setXDir(-1);
         }
-
-        if (y == 0) {
+        if (y <= 0) {
             setYDir(1);
+        }
+        if (y >= HEIGHT - i_height-30) {
+            setYDir(-1);
         }
     }
 
     private void resetState() {
-        
         x = INIT_BALL_X;
         y = INIT_BALL_Y;
     }
@@ -53,5 +59,9 @@ public class Ball extends Sprite implements Commons {
 
     public int getYDir() {
         return ydir;
+    }
+    
+    public int getXDir() {
+        return xdir;
     }
 }

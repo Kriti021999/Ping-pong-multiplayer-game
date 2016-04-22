@@ -8,3 +8,5 @@
 /Commons.class
 /Ball.class
 /Board$ScheduleTask.class
+/collision_ball_paddle.class
+/components/
