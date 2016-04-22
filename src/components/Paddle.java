@@ -1,14 +1,9 @@
 package components;
-import java.awt.Image;
-import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
-
-import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
 public class Paddle extends Sprite implements Commons {
 
-    private int dx,dy;
+    int dx,dy;
     int side;
 
     public Paddle(int side) {
@@ -29,65 +24,9 @@ public class Paddle extends Sprite implements Commons {
         resetState();
     }
 
-    public void move(Ball b) {
-    
-    	if (side==1 || side==3){
-    		if(b.getX() < this.x){
-    			this.dx =-1;
-    		}
-    		if(b.getX() > this.x){
-    			this.dx= 1;
-    		}
-    		if (this.x <= 0) {
-    			this.x = 0;
-    		}
-    		if (this.x >= WIDTH - i_width) {
-    			this.x = WIDTH - i_width;
-    		}
-    		this.x += this.dx;
-    	}
-    	else{
-    		if(b.getY() < this.y){
-    	           this.dy =-1;
-    	    	}
-    	    	if(b.getY() > this.y){
-    	    		this.dy= 1;
-    	    	}
-    	        if (this.y <= 0) {
-    	            this.y = 0;
-    	        }
-    	        if (this.y >= HEIGHT - i_height-30) {
-    	            this.y = HEIGHT - i_height-30;
-    	        }
-    	    	this.y += this.dy;
-    	}
-    	
-    }
-
-    public void keyPressed(KeyEvent e) {
-
-        int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT) {
-            this.dx = -1;
-        }
-
-        if (key == KeyEvent.VK_RIGHT) {
-        	this.dx = 1;
-        }
-    }
-
-    public void keyReleased(KeyEvent e) {
-
-        int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_LEFT) {
-            this.dx = 0;
-        }
-
-        if (key == KeyEvent.VK_RIGHT) {
-        	this.dx = 0;
-        }
+    public void move(Ball b) {    
+    	this.x = x;					// TODO from the inputs obtained from the network !!
+    	this.y = y;
     }
 
     private void resetState() {

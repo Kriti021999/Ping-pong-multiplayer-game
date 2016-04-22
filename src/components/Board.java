@@ -21,6 +21,7 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     private ArrayList<Paddle> paddle = new ArrayList<Paddle>();
+    private userPaddle user_paddle;
     private Ball ball;
     public static final int DELAY = 1000;
     public static final int PERIOD = 10;
@@ -48,10 +49,11 @@ public class Board extends JPanel implements ActionListener {
     
     private void gameInit(){
     	ball = new Ball();
-    	for(int i=1;i<5;i++){
-    		Paddle pad = new Paddle(i);
+    	for(int i=1;i<4;i++){
+    		cpuPaddle pad = new cpuPaddle(i+1);
     		paddle.add(pad);
     	}
+    	user_paddle = new userPaddle();
     }
 
 
@@ -75,9 +77,10 @@ public class Board extends JPanel implements ActionListener {
     private void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;  
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
-        for(int i=0;i<4;i++){
+        for(int i=0;i<3;i++){
         	g2d.drawImage(paddle.get(i).getImage(), paddle.get(i).getX(), paddle.get(i).getY(), paddle.get(i).getWidth(), paddle.get(i).getHeight(), this);
         }
+        g2d.drawImage(user_paddle.getImage(), user_paddle.getX(), user_paddle.getY(), user_paddle.getWidth(), user_paddle.getHeight(), this);
     }
     
     private class ScheduleTask extends TimerTask {
@@ -86,10 +89,12 @@ public class Board extends JPanel implements ActionListener {
         public void run() {
 
             ball.move();
-            for(int i=0;i<4;i++){
+            for(int i=0;i<3;i++){
             	paddle.get(i).move(ball);
             	new collision_ball_paddle(paddle.get(i),ball);
             }
+            user_paddle.move(ball);
+            new collision_ball_paddle(user_paddle,ball);
             repaint();
         }
     }
@@ -105,12 +110,12 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyReleased(KeyEvent e) {
-            //paddle.keyReleased(e);
+        	user_paddle.keyReleased(e);
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            //paddle.keyPressed(e);
+            user_paddle.keyPressed(e);
         }
     }
 }
