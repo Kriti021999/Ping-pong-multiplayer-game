@@ -1,6 +1,6 @@
 package components;
 import java.lang.Math;
-public class collision_ball_paddle {
+public class collision_ball_paddle implements Commons{
 	
     int collision_area;
 	collision_ball_paddle(Paddle paddle,Ball ball){
@@ -8,10 +8,9 @@ public class collision_ball_paddle {
 	}
 	
     private void checkCollision(Paddle pad, Ball ball) {
-    	 
-    	
+    	//collision of ball with paddle detection
     	if ((ball.getRect()).intersects(pad.getRect())){
-    		
+    		pad.score++;
     		if(pad.side==1 || pad.side==3){
     			int paddlePos = (int) pad.getRect().getMinX();
     			int ballPos = (int) ball.getRect().getCenterX();
@@ -99,5 +98,24 @@ public class collision_ball_paddle {
     			}*/
     		}
     	}
+    	//collision of ball with wall detection
+    	if(pad.side==1){
+			if(ball.y >= HEIGHT - ball.i_height-30)
+				{pad.life--;}
+    	}
+    	else if(pad.side==3)
+    	{
+			if(ball.y <= 0)
+				{pad.life--;}
+    	}
+    	else if(pad.side == 2){
+			if(ball.x <= 0)
+				{pad.life--;}
+    	}
+    	else if(pad.side == 4){
+    		if(ball.x >= WIDTH - ball.i_width)
+				{pad.life--;}
+    	}
+    	
     }
 }

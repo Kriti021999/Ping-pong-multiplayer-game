@@ -8,20 +8,23 @@ import java.awt.event.KeyEvent;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
+
+import components.Board.TAdapter;
 
 @SuppressWarnings("serial")
 	
 public class MainGame extends JFrame implements Commons,ActionListener{
 	public static String difficulty;
+	public static String no_ofPlayer="2";
     /**
 	 * 
 	 */
 	JPanel controlPanel;
-	public MainGame() {
-        
+	public MainGame() {      
         initUI();
     }
     
@@ -35,32 +38,52 @@ public class MainGame extends JFrame implements Commons,ActionListener{
         JButton exit = new JButton("Exit");
         
         final JRadioButton radEasy = new JRadioButton("Easy", true);
-        radEasy.setMnemonic(KeyEvent.VK_E);
         radEasy.setActionCommand("easy");
         final JRadioButton radMedium = new JRadioButton("Medium");
-        radMedium.setMnemonic(KeyEvent.VK_M);
         radMedium.setActionCommand("medium");
         final JRadioButton radHard = new JRadioButton("Hard");
-        radHard.setMnemonic(KeyEvent.VK_H);
         radHard.setActionCommand("hard");
         
+        final JRadioButton rad2 = new JRadioButton("2",true);
+        rad2.setActionCommand("2");
+        final JRadioButton rad4 = new JRadioButton("4");
+        rad4.setActionCommand("4");
+
         radEasy.addActionListener(this);
         radMedium.addActionListener(this);
         radHard.addActionListener(this);
+        rad2.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		// TODO Auto-generated method stub
+        		no_ofPlayer = e.getActionCommand();
+        	}
+        });
+        rad4.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e) {
+        		// TODO Auto-generated method stub
+        		no_ofPlayer = e.getActionCommand();
+        	}
+        });
         
       //Group the radio buttons.
-        ButtonGroup group = new ButtonGroup();
-        group.add(radEasy);
-        group.add(radMedium);
-        group.add(radHard);
+        ButtonGroup difficulty = new ButtonGroup();
+        difficulty.add(radEasy);
+        difficulty.add(radMedium);
+        difficulty.add(radHard);
         controlPanel.add(single);
         controlPanel.add(radEasy);
         controlPanel.add(radMedium);
         controlPanel.add(radHard); 
+        
+        ButtonGroup no_of_player = new ButtonGroup();
+        no_of_player.add(rad2);
+        no_of_player.add(rad4);
+        controlPanel.add(rad2);
+        controlPanel.add(rad4);
+        
         controlPanel.add(multiplayer);      
         controlPanel.add(exit);
         getContentPane().add(controlPanel);
-        //difficulty = "hard";
         
         single.addActionListener(new ActionListener(){
 
@@ -72,8 +95,9 @@ public class MainGame extends JFrame implements Commons,ActionListener{
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
+						Board b = new Board();
 						getContentPane().removeAll();
-						getContentPane().add(new Board());
+						getContentPane().add(b);
 						repaint();
 						revalidate();
 					}
@@ -107,7 +131,6 @@ public class MainGame extends JFrame implements Commons,ActionListener{
              @Override
              public void run() {
             	 new MainGame();
-            		 
              }
          });
     }
