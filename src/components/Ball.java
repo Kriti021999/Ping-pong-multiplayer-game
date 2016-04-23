@@ -21,9 +21,15 @@ public class Ball extends Sprite implements Commons {
     }
 
     public void move() {
-        
-        x += (xdir*1);
-        y += (ydir*1);
+    	double speed;
+        if(MainGame.difficulty == "hard")
+        	speed = 5;
+        else if(MainGame.difficulty == "medium")
+        	speed = 4;
+        else
+        	speed = 2;
+        x += (xdir*speed);
+        y += (ydir*speed);
         
         /*
         * Setting the direction of movement of the ball i.e., xdir and ydir

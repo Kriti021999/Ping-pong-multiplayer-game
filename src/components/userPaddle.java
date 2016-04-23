@@ -10,9 +10,13 @@ public class userPaddle extends Paddle{
 	
 	@Override
 	public void move(Ball b){
-		if(this.x > 0 && this.x < (WIDTH-this.i_width)){
+		if(this.x >= 0 && this.x <= (WIDTH-this.i_width)){
 			this.x += this.dx;
 		}
+		else if(this.x<0)
+			this.x = 1;
+		else if(this.x > WIDTH-this.i_width)
+			this.x = WIDTH-this.i_width-1;
 	}
 	
 	public void keyPressed(KeyEvent e) {

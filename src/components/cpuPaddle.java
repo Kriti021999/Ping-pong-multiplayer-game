@@ -7,13 +7,20 @@ public class cpuPaddle extends Paddle{
 	}
 	
 	@Override
-	public void move(Ball b) {    
+	public void move(Ball b) { 
+		int sp;
+		if(MainGame.difficulty == "hard")
+        	sp = 5;
+        else if(MainGame.difficulty == "medium")
+        	sp = 3;
+        else
+        	sp = 1;
     	if (side==1 || side==3){
     		if(b.getX() < this.x){
-    			this.dx =-1;
+    			this.dx =-1*sp;
     		}
     		if(b.getX() > this.x){
-    			this.dx= 1;
+    			this.dx= 1*sp;
     		}
     		if (this.x <= 0) {
     			this.x = 0;
@@ -25,10 +32,10 @@ public class cpuPaddle extends Paddle{
     	}
     	else{
     		if(b.getY() < this.y){
-    	           this.dy =-1;
+    	           this.dy =-1*sp;
     	    	}
     	    	if(b.getY() > this.y){
-    	    		this.dy= 1;
+    	    		this.dy = 1*sp;
     	    	}
     	        if (this.y <= 0) {
     	            this.y = 0;
