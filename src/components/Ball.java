@@ -3,8 +3,8 @@ import javax.swing.ImageIcon;
 
 public class Ball extends Sprite implements Commons {
 
-    private int xdir;
-    private int ydir;
+    private double xdir;
+    private double ydir;
 
     public Ball() {
 
@@ -23,11 +23,11 @@ public class Ball extends Sprite implements Commons {
     public void move() {
     	double speed;
         if(MainGame.difficulty == "hard")
-        	speed = 5;
+        	speed = 1;
         else if(MainGame.difficulty == "medium")
-        	speed = 4;
+        	speed = 1;
         else
-        	speed = 2;
+        	speed = 1;
         x += (xdir*speed);
         y += (ydir*speed);
         
@@ -55,19 +55,23 @@ public class Ball extends Sprite implements Commons {
         y = INIT_BALL_Y;
     }
 
-    public void setXDir(int x) {
+    public void setXDir(double x) {
         xdir = x;
     }
 
-    public void setYDir(int y) {
+    public void setYDir(double y) {
         ydir = y;
     }
 
     public int getYDir() {
-        return ydir;
+    	Double a = new Double(ydir);
+    	int Y = a.intValue();
+        return Y;
     }
     
     public int getXDir() {
-        return xdir;
+    	Double a = new Double(xdir);
+    	int X = a.intValue();
+        return X;
     }
 }

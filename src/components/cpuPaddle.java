@@ -1,5 +1,7 @@
 package components;
 
+import java.util.Random;
+
 public class cpuPaddle extends Paddle{
 
 	public cpuPaddle(int side) {
@@ -8,13 +10,19 @@ public class cpuPaddle extends Paddle{
 	
 	@Override
 	public void move(Ball b) { 
-		int sp;
-		if(MainGame.difficulty == "hard")
-        	sp = 5;
-        else if(MainGame.difficulty == "medium")
-        	sp = 3;
-        else
-        	sp = 1;
+		double sp;
+		if(MainGame.difficulty == "hard"){
+			Random r = new Random();
+    	    sp = 1 + (1.1 - 1) * r.nextDouble();
+    	    }
+        else if(MainGame.difficulty == "medium"){
+        	Random r = new Random();
+        	sp = 0.9 + (1 - 0.9) * r.nextDouble();
+        	}
+        else{
+        	Random r = new Random();
+            sp = 0.85 + (0.9 - 0.85) * r.nextDouble();
+        	}
     	if (side==1 || side==3){
     		if(b.getX() < this.x){
     			this.dx =-1*sp;

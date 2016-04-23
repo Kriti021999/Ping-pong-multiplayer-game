@@ -4,26 +4,30 @@ import java.awt.Rectangle;
 
 public class Sprite {
 
-    protected int x;
-    protected int y;
+    protected double x;
+    protected double y;
     protected int i_width;
     protected int i_height;
     protected Image image;
 
-    public void setX(int x) {
+    public void setX(double x) {
         this.x = x;
     }
 
     public int getX() {
-        return x;
+    	Double a = new Double(x);
+    	int X = a.intValue();
+        return X;
     }
 
-    public void setY(int y) {
+    public void setY(double y) {
         this.y = y;
     }
 
     public int getY() {
-        return y;
+    	Double a = new Double(y);
+    	int Y = a.intValue();
+        return Y;
     }
 
     public int getWidth() {
@@ -39,7 +43,11 @@ public class Sprite {
     }
   
     Rectangle getRect() {
-        return new Rectangle(x, y,
+    	Double a = new Double(x);
+    	int X = a.intValue();
+    	Double b = new Double(y);
+    	int Y = b.intValue();
+        return new Rectangle(X, Y,
                 image.getWidth(null), image.getHeight(null));
     }
    

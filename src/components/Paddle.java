@@ -3,7 +3,7 @@ import javax.swing.ImageIcon;
 
 public class Paddle extends Sprite implements Commons {
 
-    int dx,dy;
+    double dx,dy;
     int side;
 
     public Paddle(int side) {
