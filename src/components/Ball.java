@@ -49,6 +49,10 @@ public class Ball extends Sprite implements Commons {
             setYDir(-1);
         }
     }
+    
+    public void stop() {
+    	resetState();
+    }
 
     private void resetState() {
         x = INIT_BALL_X;

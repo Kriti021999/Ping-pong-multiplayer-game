@@ -5,6 +5,8 @@ public class Paddle extends Sprite implements Commons {
 
     int dx,dy;
     int side;
+    int score=0;
+    int life=3;
 
     public Paddle(int side) {
     	this.side = side;
