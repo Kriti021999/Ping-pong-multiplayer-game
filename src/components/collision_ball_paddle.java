@@ -24,7 +24,7 @@ public class collision_ball_paddle {
 				}
     			else{
     				if (ballPos < paddlePos){
-    					System.out.println(String.format("%d %d %d \n",ballPos,paddlePos,(pad.i_width/10)));
+    					//System.out.println(String.format("%d %d %d \n",ballPos,paddlePos,(pad.i_width/10)));
         				ball.setXDir(-1);
         				ball.setYDir(up_down);
         			}    				

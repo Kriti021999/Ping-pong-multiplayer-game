@@ -31,7 +31,7 @@ public class Board extends JPanel implements ActionListener {
         initBoard();
     }
     
-    private void initBoard() {
+    protected void initBoard() {
         
         addKeyListener(new TAdapter());
         setFocusable(true);
