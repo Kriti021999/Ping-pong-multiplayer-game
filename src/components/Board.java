@@ -29,7 +29,7 @@ public class Board extends JPanel implements ActionListener {
     private Ball ball;
     public static final int DELAY = 1000;
     public static final int PERIOD = 10;
-    public JLabel score[];
+    //public JLabel score[];
     public JLabel life[];
     public Board() {
     	if(MainGame.no_ofPlayer=="2")
@@ -40,12 +40,12 @@ public class Board extends JPanel implements ActionListener {
     	initBoard();
     }
     private void initBoard() {
-    	score = new JLabel[noCPU+1];
+    	//score = new JLabel[noCPU+1];
     	life = new JLabel[noCPU+1];
     	for(int i=0;i<noCPU+1;i++){
-    		score[i] = new JLabel("sc");
+    		//score[i] = new JLabel("sc");
     		life[i] = new JLabel("lf");
-    		add(score[i]);
+    		//add(score[i]);
     		add(life[i]);
     	}
         addKeyListener(new TAdapter());
@@ -71,12 +71,15 @@ public class Board extends JPanel implements ActionListener {
     		else
     			pad = new cpuPaddle(i+1);
     		paddle.add(pad);
-    		score[i].setText((""+pad.score));
-    		life[i].setText(""+pad.life+" :");
+    		//score[i].setText((""+pad.score));
+    		if(i == noCPU)
+    			life[i].setText(""+pad.life);
+    		else	
+    			life[i].setText(""+pad.life+" ::");
     	}
     	user_paddle = new userPaddle();
-    	score[0].setText(""+user_paddle.score);
-    	life[0].setText(""+user_paddle.life+" :");
+    	//score[0].setText(""+user_paddle.score);
+    	life[0].setText(""+user_paddle.life+" ::");
     }
 
 
@@ -130,13 +133,16 @@ public class Board extends JPanel implements ActionListener {
                     for(int i=0;i<noCPU;i++){
                     	paddle.get(i).move(ball);
                     	new collision_ball_paddle(paddle.get(i),ball);
-                    	score[i+1].setText(""+paddle.get(i).score);
-                    	life[i+1].setText(""+paddle.get(i).life+" :");
+                    	//score[i+1].setText(""+paddle.get(i).score);
+                    	if(i == noCPU-1)
+                    		life[i+1].setText(""+paddle.get(i).life);
+                    	else
+                    		life[i+1].setText(""+paddle.get(i).life+" ::");
                     }
                     user_paddle.move(ball);
                     new collision_ball_paddle(user_paddle,ball);
-                    score[0].setText(""+user_paddle.score);
-                    life[0].setText(""+user_paddle.life+" :");
+                    //score[0].setText(""+user_paddle.score);
+                    life[0].setText(""+user_paddle.life+" ::");
             	}
         	}
         	else{
@@ -154,13 +160,16 @@ public class Board extends JPanel implements ActionListener {
                     for(int i=0;i<noCPU;i++){
                     	paddle.get(i).move(ball);
                     	new collision_ball_paddle(paddle.get(i),ball);
-                    	score[i+1].setText(""+paddle.get(i).score);
-                    	life[i+1].setText(""+paddle.get(i).life+" :");
+                    	//score[i+1].setText(""+paddle.get(i).score);
+                    	if(i == noCPU-1)
+                    		life[i+1].setText(""+paddle.get(i).life);
+                    	else
+                    		life[i+1].setText(""+paddle.get(i).life+" ::");
                     }
                     user_paddle.move(ball);
                     new collision_ball_paddle(user_paddle,ball);
-                    score[0].setText(""+user_paddle.score);
-                    life[0].setText(""+user_paddle.life+" :");
+                    //score[0].setText(""+user_paddle.score);
+                    life[0].setText(""+user_paddle.life+" ::");
             	}
         	}
                 repaint(); 

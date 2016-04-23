@@ -51,7 +51,8 @@ public class Ball extends Sprite implements Commons {
     }
     
     public void stop() {
-    	resetState();
+    	this.x = x;
+    	this.y = y;
     }
 
     private void resetState() {

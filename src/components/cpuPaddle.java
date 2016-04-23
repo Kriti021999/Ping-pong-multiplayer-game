@@ -12,16 +12,13 @@ public class cpuPaddle extends Paddle{
 	public void move(Ball b) { 
 		double sp;
 		if(MainGame.difficulty == "hard"){
-			Random r = new Random();
-    	    sp = 1 + (1.1 - 1) * r.nextDouble();
+    	    sp = 0.95 ;
     	    }
         else if(MainGame.difficulty == "medium"){
-        	Random r = new Random();
-        	sp = 0.9 + (1 - 0.9) * r.nextDouble();
+        	sp = 0.90 ;
         	}
         else{
-        	Random r = new Random();
-            sp = 0.85 + (0.9 - 0.85) * r.nextDouble();
+            sp = 0.85 ;
         	}
     	if (side==1 || side==3){
     		if(b.getX() < this.x){

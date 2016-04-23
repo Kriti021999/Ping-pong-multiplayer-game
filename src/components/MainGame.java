@@ -95,11 +95,12 @@ public class MainGame extends JFrame implements Commons,ActionListener{
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						Board b = new Board();
-						getContentPane().removeAll();
-						getContentPane().add(b);
-						repaint();
-						revalidate();
+						new JFrameGame();
+						//Board b = new Board();
+						//getContentPane().removeAll();
+						//getContentPane().add(b);
+						//repaint();
+						//revalidate();
 					}
 					
 				});
