@@ -1,6 +1,7 @@
 package components;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -22,7 +23,9 @@ import components.collision_ball_paddle;
 
 @SuppressWarnings("serial")
 public class Board extends JPanel implements ActionListener {
+	
 	int noCPU;
+	String paddlelose="";
 	private Timer timer;
     private ArrayList<Paddle> paddle = new ArrayList<Paddle>();
     private userPaddle user_paddle;
@@ -31,6 +34,9 @@ public class Board extends JPanel implements ActionListener {
     public static final int PERIOD = 10;
     //public JLabel score[];
     public JLabel life[];
+    private boolean playing = true;
+    private boolean gameOver = false;
+    
     public Board() {
     	if(MainGame.no_ofPlayer=="2")
         	noCPU = 1;
@@ -86,7 +92,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        if(playing){
         Graphics2D g2d = (Graphics2D) g;
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
@@ -96,8 +102,24 @@ public class Board extends JPanel implements ActionListener {
                 RenderingHints.VALUE_RENDER_QUALITY);
 
          doDrawing(g2d);
+         g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+         g.drawString(String.valueOf(user_paddle.life), 290, 550);
+         if(noCPU==1){
+        	 g.drawString(String.valueOf(paddle.get(0).life), 290, 50);
+         }
+         else{
+        	 g.drawString(String.valueOf(paddle.get(0).life), 50, 290);
+        	 g.drawString(String.valueOf(paddle.get(1).life), 290, 50);
+        	 g.drawString(String.valueOf(paddle.get(2).life), 550, 290);
+         }
 
         Toolkit.getDefaultToolkit().sync();
+        }
+        else{
+        	 g.setColor(Color.WHITE);
+        	 g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+             g.drawString("Player "+paddlelose+" loses", 165, 250);
+        }
     }
 
     private void doDrawing(Graphics g) {
@@ -113,7 +135,7 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void run() {
-        	String paddlelose="";
+        	
         	if(MainGame.no_ofPlayer=="4"){
             	if(paddle.get(0).life==0||paddle.get(1).life==0||paddle.get(2).life==0||user_paddle.life==0){
             		if(paddle.get(0).life==0)
@@ -125,6 +147,8 @@ public class Board extends JPanel implements ActionListener {
             		else if(user_paddle.life==0)
                     	paddlelose = ""+user_paddle.side;
             		ball.stop();
+            		gameOver = true;
+            		playing = false;
             		//display paddle is losing
             		//add(new JLabel(""+paddlelose));
             	}
@@ -192,7 +216,8 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            user_paddle.keyPressed(e);
+            if(playing)
+        	user_paddle.keyPressed(e);    	
         }
     }
 }

@@ -1,5 +1,9 @@
 package components;
+
+import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -24,15 +28,25 @@ public class MainGame extends JFrame implements Commons,ActionListener{
 	 * 
 	 */
 	JPanel controlPanel;
+	
+	//constructor
 	public MainGame() {      
         initUI();
     }
     
     private void initUI() {
         
-    	controlPanel = new JPanel();
+    	controlPanel = new JPanel(){
+    		 public void paintComponent(Graphics g){
+    		        super.paintComponent(g);
+    		        g.setColor(Color.WHITE);
+    		        g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+    	            g.drawString("Pong!", 250, 50);
+
+    		 }
+    	};
     	controlPanel.setLayout(new GridBagLayout());
-    	
+    	controlPanel.setBackground(new Color(209,102,242,255));
     	JButton single = new JButton("Single");
         JButton multiplayer = new JButton("Multiplayer");
         JButton exit = new JButton("Exit");
