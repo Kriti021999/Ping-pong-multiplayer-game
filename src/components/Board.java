@@ -19,41 +19,40 @@ import components.collision_ball_paddle;
 @SuppressWarnings("serial")
 public class Board extends JPanel implements ActionListener {
 
-    private Timer timer;
-    private ArrayList<Paddle> paddle = new ArrayList<Paddle>();
-    private userPaddle user_paddle;
-    private Ball ball;
+    protected Timer timer;
+    ArrayList<Paddle> paddle = new ArrayList<Paddle>();
+    userPaddle user_paddle;
+    Ball ball;
     public static final int DELAY = 1000;
     public static final int PERIOD = 10;
     
     public Board() {
-
         initBoard();
     }
     
-    protected void initBoard() {
-        
-        addKeyListener(new TAdapter());
+    private void initBoard() {
         setFocusable(true);
         setBackground(Color.BLACK);
-
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new ScheduleTask(), DELAY, PERIOD);
-    }
-    
-    @Override
-    public void addNotify() {
-        super.addNotify();
         gameInit();
     }
     
-    private void gameInit(){
+    /*@Override
+    public void addNotify() {
+        super.addNotify();
+        gameInit();
+    }*/
+    
+    protected void gameInit(){
+    	addKeyListener(new TAdapter());
     	ball = new Ball();
     	for(int i=1;i<4;i++){
     		cpuPaddle pad = new cpuPaddle(i+1);
     		paddle.add(pad);
     	}
     	user_paddle = new userPaddle();
+    	
+    	timer = new Timer();
+        timer.scheduleAtFixedRate(new ScheduleTask(), DELAY, PERIOD);
     }
 
 
@@ -74,7 +73,7 @@ public class Board extends JPanel implements ActionListener {
         Toolkit.getDefaultToolkit().sync();
     }
 
-    private void doDrawing(Graphics g) {
+    protected void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;  
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
         for(int i=0;i<3;i++){
@@ -87,7 +86,6 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void run() {
-
             ball.move();
             for(int i=0;i<3;i++){
             	paddle.get(i).move(ball);

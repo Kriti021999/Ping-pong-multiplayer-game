@@ -7,15 +7,19 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
-public abstract class network_methods implements Commons {
+import javax.swing.JFrame;
+
+public class network_methods implements Commons {
 	protected boolean isHost;
-	private BufferedWriter output;
-	private BufferedReader input;
+	protected BufferedWriter output;
+	protected BufferedReader input;
 	protected String hostName;
 	protected String clientName;
 	private Socket socket;
-	protected abstract void start();
+	private String ip;
+	private JFrame frame;
 	
 	public network_methods(Socket socket, String hostName, String clientName, BufferedReader input, BufferedWriter output) {
 		this.socket = socket;
@@ -26,9 +30,14 @@ public abstract class network_methods implements Commons {
 		isHost = false;
 	}
 
-	public network_methods(String hostName){
-		this.hostName = hostName;
+	public network_methods(String username,JFrame frame){
+		this.frame = frame;
+		this.hostName = username;
 		isHost = true;
+	}
+	
+	protected void start(){
+		new MainGame(frame,this);	//start multi-player I/O loop.
 	}
 	
 	public final void lookForPlayers() throws IOException{
@@ -38,6 +47,9 @@ public abstract class network_methods implements Commons {
 		//wait for player to join
 		Socket s = ss.accept();
 		this.socket = s;
+		//get and store client ip
+		ip = s.getInetAddress().getHostAddress();
+		System.out.println("client ip is stored as: "+ip);
 		//set up input/output streams
 		input = new BufferedReader(new InputStreamReader(s.getInputStream(), "UTF-8"));
 		output = new BufferedWriter(new OutputStreamWriter(s.getOutputStream(), "UTF-8"));
@@ -52,9 +64,12 @@ public abstract class network_methods implements Commons {
 	}
 	
 	public final void joinGame(String clientName, Socket socket) throws IOException{
+		ip = socket.getInetAddress().getHostAddress();
+		this.socket = socket;
+		System.out.println("host ip is stored as: "+ip);
 		//establish streams
-		BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-		BufferedWriter output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+		input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+		output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 		//figure out what game we're playing
 		String in = getMessage(input, 30000);
 		String hostName = in.substring(in.indexOf(' ')+1).trim();
@@ -103,11 +118,24 @@ public abstract class network_methods implements Commons {
 			}
 		}
 		String in = input.readLine();
+		System.out.println(in);
 		return in;
 	}
 	
 	public String getMessage(long timeout) throws IOException {
 		return network_methods.getMessage(input, timeout);
+	}
+	
+	public void newConnection(){
+		try {
+	        socket = new Socket( ip, GAMEPORT);
+	        input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+	        output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
+	    } catch (UnknownHostException e) {	        
+	        e.printStackTrace();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 }
 

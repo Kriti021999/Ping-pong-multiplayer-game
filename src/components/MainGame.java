@@ -1,5 +1,4 @@
 package components;
-import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,104 +17,40 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 
-@SuppressWarnings("serial")
-	
 public class MainGame implements Commons,ActionListener{
 	public static String difficulty;
+	static String username = "Saurabh";
+	boolean isMultiPlayer = false;
+	JPanel controlPanel,mPlyrPanel;
+	JFrame frame;
+	network_methods netMethods;
+	
     /**
 	 * 
-	 */
-	JPanel controlPanel,mPlyrPanel;
-	JFrame frame; 
+	 */ 
 	public MainGame() {
+		this.isMultiPlayer = false;
+        initUI();			//Actual game initialization
+    }
+	
+	public MainGame(JFrame mFrame, network_methods netMethods) {
+		this.isMultiPlayer = true;
+		this.frame = mFrame;
+		this.netMethods = netMethods;
         initUI();			//Actual game initialization
     }
 	
     private void initUI() {
         
-    	frame = new JFrame("Network Pong - P2P - v1.0");
-    	
-    	controlPanel = new JPanel();
-    	controlPanel.setLayout(new GridBagLayout());
-    	
-    	JButton single = new JButton("Single");
-        JButton multiplayer = new JButton("Multiplayer");
-        JButton exit = new JButton("Exit");
-        
-        final JRadioButton radEasy = new JRadioButton("Easy", true);
-        radEasy.setMnemonic(KeyEvent.VK_E);
-        radEasy.setActionCommand("easy");
-        final JRadioButton radMedium = new JRadioButton("Medium");
-        radMedium.setMnemonic(KeyEvent.VK_M);
-        radMedium.setActionCommand("medium");
-        final JRadioButton radHard = new JRadioButton("Hard");
-        radHard.setMnemonic(KeyEvent.VK_H);
-        radHard.setActionCommand("hard");
-        
-        radEasy.addActionListener(this);
-        radMedium.addActionListener(this);
-        radHard.addActionListener(this);
-        
-      //Group the radio buttons.
-        ButtonGroup group = new ButtonGroup();
-        group.add(radEasy);
-        group.add(radMedium);
-        group.add(radHard);
-        controlPanel.add(single);
-        controlPanel.add(radEasy);
-        controlPanel.add(radMedium);
-        controlPanel.add(radHard); 
-        controlPanel.add(multiplayer);      
-        controlPanel.add(exit);
-        frame.getContentPane().add(controlPanel);
-        difficulty = "hard";
-              
-        
-        single.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				SwingUtilities.invokeLater(new Runnable(){
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						frame.getContentPane().removeAll();
-						frame.getContentPane().add(new Board());
-						frame.repaint();
-						frame.revalidate();
-					}
-					
-				});
-			}
-        	
-        });
-        
-        multiplayer.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				frame.getContentPane().removeAll();
-				addMultiplayerMenu();
-				frame.getContentPane().add(mPlyrPanel);
-				frame.repaint();
-				frame.revalidate();				
-			}
-        	
-        });
-        
-        exit.addActionListener(new ActionListener(){
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.exit(0);
-			}
-        	
-        });
-                
+    	if (!isMultiPlayer){
+    		frame = new JFrame("Network Pong - P2P - v1.0");
+    		addMainMenu();
+    	}
+    	else{
+			frame.getContentPane().add(new multiplayerBoard(netMethods));
+			frame.repaint();
+			frame.revalidate();
+    	}
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(Commons.WIDTH, Commons.HEIGHT);
         //frame.setTitle("Pong!");
@@ -137,9 +71,9 @@ public class MainGame implements Commons,ActionListener{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				multiplayerBoard mb = new multiplayerBoard();
+				network_methods net = new network_methods(username,frame);
 				try {
-					mb.lookForPlayers();	//Entry Point for the multi-player game when you're host
+					net.lookForPlayers();	//Entry Point for the multi-player game when you're host
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}				
@@ -178,8 +112,8 @@ public class MainGame implements Commons,ActionListener{
 			return;
 		}
 		try {
-			multiplayerBoard mb = new multiplayerBoard();
-			mb.joinGame("Saurabh1", s);
+			network_methods net = new network_methods(username, frame);
+			net.joinGame(username, s);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -191,14 +125,79 @@ public class MainGame implements Commons,ActionListener{
              @Override
              public void run() {
             	 new MainGame();
-            		 
              }
          });
     }
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
 		difficulty = e.getActionCommand();
 	}
+	
+	private void addMainMenu(){
+    	controlPanel = new JPanel();
+    	controlPanel.setLayout(new GridBagLayout());
+    	
+    	JButton single = new JButton("Single");
+        JButton multiplayer = new JButton("Multiplayer");
+        JButton exit = new JButton("Exit");
+        
+        final JRadioButton radEasy = new JRadioButton("Easy", true);
+        radEasy.setMnemonic(KeyEvent.VK_E);
+        radEasy.setActionCommand("easy");
+        final JRadioButton radMedium = new JRadioButton("Medium");
+        radMedium.setMnemonic(KeyEvent.VK_M);
+        radMedium.setActionCommand("medium");
+        final JRadioButton radHard = new JRadioButton("Hard");
+        radHard.setMnemonic(KeyEvent.VK_H);
+        radHard.setActionCommand("hard");
+        
+        radEasy.addActionListener(this);
+        radMedium.addActionListener(this);
+        radHard.addActionListener(this);     
+        	//Group the radio buttons.
+        ButtonGroup group = new ButtonGroup();
+        group.add(radEasy);
+        group.add(radMedium);
+        group.add(radHard);
+        controlPanel.add(single);
+        controlPanel.add(radEasy);
+        controlPanel.add(radMedium);
+        controlPanel.add(radHard); 
+        controlPanel.add(multiplayer);      
+        controlPanel.add(exit);
+        frame.getContentPane().add(controlPanel);
+        difficulty = "hard";
+        
+        single.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SwingUtilities.invokeLater(new Runnable(){
+					@Override
+					public void run() {
+						frame.getContentPane().removeAll();
+						frame.getContentPane().add(new Board());
+						frame.repaint();
+						frame.revalidate();
+					}
+				});
+			}
+        });
+        multiplayer.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				frame.getContentPane().removeAll();
+				addMultiplayerMenu();
+				frame.getContentPane().add(mPlyrPanel);
+				frame.repaint();
+				frame.revalidate();				
+			}
+        });
+        exit.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}	
+        });
+    }
 }
