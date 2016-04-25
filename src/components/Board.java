@@ -1,5 +1,4 @@
 package components;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -10,7 +9,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -26,27 +24,35 @@ public class Board extends JPanel implements ActionListener {
 	
 	int noCPU;
 	String paddlelose="";
-	private Timer timer;
-    private ArrayList<Paddle> paddle = new ArrayList<Paddle>();
-    private userPaddle user_paddle;
-    private Ball ball;
+	protected Timer timer;
+    ArrayList<Paddle> paddle = new ArrayList<Paddle>();
+    userPaddle user_paddle;
+    Ball ball;
     public static final int DELAY = 1000;
     public static final int PERIOD = 10;
     //public JLabel score[];
     public JLabel life[];
+    protected boolean isMultiplayer = false;
     private boolean playing = true;
     private boolean gameOver = false;
     
     public Board() {
+    	initBoard();
+    }
+    private void initBoard() {
+    	//score = new JLabel[noCPU+1];
+        setFocusable(true);
+        setBackground(Color.cyan);
+        gameInit();
+    }
+    
+    protected void gameInit(){
+
     	if(MainGame.no_ofPlayer=="2")
         	noCPU = 1;
         else
         	noCPU = 3;
     	System.out.println(MainGame.no_ofPlayer);
-    	initBoard();
-    }
-    private void initBoard() {
-    	//score = new JLabel[noCPU+1];
     	life = new JLabel[noCPU+1];
     	for(int i=0;i<noCPU+1;i++){
     		//score[i] = new JLabel("sc");
@@ -54,21 +60,8 @@ public class Board extends JPanel implements ActionListener {
     		//add(score[i]);
     		add(life[i]);
     	}
-        addKeyListener(new TAdapter());
-        setFocusable(true);
-        setBackground(Color.cyan);
 
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new ScheduleTask(), DELAY, PERIOD);
-    }
-    
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        gameInit();
-    }
-    
-    private void gameInit(){
+    	addKeyListener(new TAdapter());
     	ball = new Ball();
     	for(int i=1;i<noCPU+1;i++){
     		cpuPaddle pad;
@@ -86,43 +79,48 @@ public class Board extends JPanel implements ActionListener {
     	user_paddle = new userPaddle();
     	//score[0].setText(""+user_paddle.score);
     	life[0].setText(""+user_paddle.life+" ::");
+    	
+    	timer = new Timer();
+        timer.scheduleAtFixedRate(new ScheduleTask(), DELAY, PERIOD);
     }
 
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if(playing){
-        Graphics2D g2d = (Graphics2D) g;
+    	super.paintComponent(g);
+    	if(!isMultiplayer){
+    		if(playing){
+    			Graphics2D g2d = (Graphics2D) g;
 
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+    			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+    					RenderingHints.VALUE_ANTIALIAS_ON);
 
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                RenderingHints.VALUE_RENDER_QUALITY);
+    			g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+    					RenderingHints.VALUE_RENDER_QUALITY);
 
-         doDrawing(g2d);
-         g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
-         g.drawString(String.valueOf(user_paddle.life), 290, 550);
-         if(noCPU==1){
-        	 g.drawString(String.valueOf(paddle.get(0).life), 290, 50);
-         }
-         else{
-        	 g.drawString(String.valueOf(paddle.get(0).life), 50, 290);
-        	 g.drawString(String.valueOf(paddle.get(1).life), 290, 50);
-        	 g.drawString(String.valueOf(paddle.get(2).life), 550, 290);
-         }
+    			doDrawing(g2d);
+    			g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+    			g.drawString(String.valueOf(user_paddle.life), 290, 550);
+    			if(noCPU==1){
+    				g.drawString(String.valueOf(paddle.get(0).life), 290, 50);
+    			}
+    			else{
+    				g.drawString(String.valueOf(paddle.get(0).life), 50, 290);
+    				g.drawString(String.valueOf(paddle.get(1).life), 290, 50);
+    				g.drawString(String.valueOf(paddle.get(2).life), 550, 290);
+    			}
 
-        Toolkit.getDefaultToolkit().sync();
-        }
-        else{
-        	 g.setColor(Color.WHITE);
-        	 g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
-             g.drawString("Player "+paddlelose+" loses", 165, 250);
-        }
+    			Toolkit.getDefaultToolkit().sync();
+    		}
+    		else{
+    			g.setColor(Color.WHITE);
+    			g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+    			g.drawString("Player "+paddlelose+" loses", 165, 250);
+    		}
+    	}
     }
 
-    private void doDrawing(Graphics g) {
+    protected void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;  
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
         for(int i=0;i<noCPU;i++){
@@ -135,7 +133,6 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void run() {
-        	
         	if(MainGame.no_ofPlayer=="4"){
             	if(paddle.get(0).life==0||paddle.get(1).life==0||paddle.get(2).life==0||user_paddle.life==0){
             		if(paddle.get(0).life==0)

@@ -27,8 +27,13 @@ public class Paddle extends Sprite implements Commons {
     }
 
     public void move(Ball b) {    
-    	this.x = x;					// TODO from the inputs obtained from the network !!
-    	this.y = y;
+    	if(this.x >= 0 && this.x <= (WIDTH-this.i_width)){
+			this.x += this.dx;
+		}
+		else if(this.x<0)
+			this.x = 1;
+		else if(this.x > WIDTH-this.i_width)
+			this.x = WIDTH-this.i_width-1;
     }
 
     private void resetState() {

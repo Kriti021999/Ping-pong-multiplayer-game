@@ -1,13 +1,14 @@
 package components;
 
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -15,36 +16,141 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import components.Board.TAdapter;
-
-@SuppressWarnings("serial")
-	
-public class MainGame extends JFrame implements Commons,ActionListener{
+public class MainGame implements Commons,ActionListener{
 	public static String difficulty;
+	static String username = "Saurabh";
 	public static String no_ofPlayer="2";
+	boolean isMultiPlayer = false;
+	JPanel controlPanel,mPlyrPanel;
+	JFrame frame;
+	network_methods netMethods;
+	
     /**
 	 * 
-	 */
-	JPanel controlPanel;
-	
-	//constructor
-	public MainGame() {      
-        initUI();
+	 */ 
+	public MainGame() {
+		this.isMultiPlayer = false;
+        initUI();			//Actual game initialization
     }
-    
+	
+	public MainGame(JFrame mFrame, network_methods netMethods) {
+		this.isMultiPlayer = true;
+		this.frame = mFrame;
+		this.netMethods = netMethods;
+        initUI();			//Actual game initialization
+    }
+	
     private void initUI() {
         
-    	controlPanel = new JPanel(){
-    		 public void paintComponent(Graphics g){
-    		        super.paintComponent(g);
-    		        g.setColor(Color.WHITE);
-    		        g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
-    	            g.drawString("Pong!", 250, 50);
+    	if (!isMultiPlayer){
+    		frame = new JFrame("Network Pong - P2P - v1.0");
+    		addMainMenu();
+    	}
+    	else{
+    		multiplayerBoard mb = new multiplayerBoard(netMethods);
+    		mb.setFocusable(true);
+    		mb.requestFocusInWindow();
+    		frame.getContentPane().removeAll();
+			frame.getContentPane().add(mb);
+			frame.repaint();
+			frame.revalidate();
+    	}
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(Commons.WIDTH, Commons.HEIGHT);
+        //frame.setTitle("Pong!");
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setVisible(true);
+    }
+    
+    private void addMultiplayerMenu(){
+    	mPlyrPanel = new JPanel();
+        mPlyrPanel.setLayout(new GridBagLayout());
+        JButton host = new JButton("host");
+        JButton join = new JButton("join");
+        JLabel  iplabel= new JLabel("Enter IP:", JLabel.RIGHT);        
+        final JTextField ipText = new JTextField(17);
+               
+        host.addActionListener(new ActionListener(){
 
-    		 }
-    	};
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				network_methods net = new network_methods(username,frame);
+				try {
+					net.lookForPlayers();	//Entry Point for the multi-player game when you're host
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}				
+			}
+        	
+        });
+        join.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String ip = ipText.getText();
+				System.out.println("IP: "+ip);
+				connectToGame(ip);
+			}
+        	
+        });
+        mPlyrPanel.add(host);
+        mPlyrPanel.add(iplabel);
+        mPlyrPanel.add(ipText);
+        mPlyrPanel.add(join);
+        frame.setVisible(true);
+    }
+    
+    public void connectToGame(String ip){
+		Socket s = null;
+		try {
+			s = new Socket(ip, GAMEPORT);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			System.out.println("Unknown Host");
+			return;
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Unable to establish connection to host");
+			return;
+		}
+		try {
+			network_methods net = new network_methods(username, frame);
+			net.joinGame(username, s);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+    public static void main(String[] args) {
+    	 SwingUtilities.invokeLater(new Runnable() {
+             @Override
+             public void run() {
+            	 new MainGame();
+             }
+         });
+    }
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		difficulty = e.getActionCommand();
+	}
+	
+	@SuppressWarnings("serial")
+	private void addMainMenu(){
+		controlPanel = new JPanel(){
+			public void paintComponent(Graphics g){
+				super.paintComponent(g);
+				g.setColor(Color.WHITE);
+				g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+				g.drawString("Pong!", 250, 50);
+
+			}
+		};
     	controlPanel.setLayout(new GridBagLayout());
     	controlPanel.setBackground(new Color(209,102,242,255));
     	JButton single = new JButton("Single");
@@ -65,16 +171,15 @@ public class MainGame extends JFrame implements Commons,ActionListener{
 
         radEasy.addActionListener(this);
         radMedium.addActionListener(this);
+        									//<<<<<<< HEAD
         radHard.addActionListener(this);
         rad2.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
-        		// TODO Auto-generated method stub
         		no_ofPlayer = e.getActionCommand();
         	}
         });
         rad4.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e) {
-        		// TODO Auto-generated method stub
         		no_ofPlayer = e.getActionCommand();
         	}
         });
@@ -84,6 +189,14 @@ public class MainGame extends JFrame implements Commons,ActionListener{
         difficulty.add(radEasy);
         difficulty.add(radMedium);
         difficulty.add(radHard);
+        								//=======
+        radHard.addActionListener(this);     
+        	//Group the radio buttons.
+        ButtonGroup group = new ButtonGroup();
+        group.add(radEasy);
+        group.add(radMedium);
+        group.add(radHard);
+        								//>>>>>>> saurabh
         controlPanel.add(single);
         controlPanel.add(radEasy);
         controlPanel.add(radMedium);
@@ -97,62 +210,36 @@ public class MainGame extends JFrame implements Commons,ActionListener{
         
         controlPanel.add(multiplayer);      
         controlPanel.add(exit);
-        getContentPane().add(controlPanel);
+
+        frame.getContentPane().add(controlPanel);
         
         single.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
 				SwingUtilities.invokeLater(new Runnable(){
-
 					@Override
 					public void run() {
-						// TODO Auto-generated method stub
-						new JFrameGame();
-						//Board b = new Board();
-						//getContentPane().removeAll();
-						//getContentPane().add(b);
-						//repaint();
-						//revalidate();
+						new JFrameGame(false);
 					}
-					
 				});
 			}
-        	
         });
-        
-        exit.addActionListener(new ActionListener(){
-
+        multiplayer.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				System.exit(0);
+				frame.getContentPane().removeAll();
+				addMultiplayerMenu();
+				frame.getContentPane().add(mPlyrPanel);
+				frame.repaint();
+				frame.revalidate();				
 			}
-        	
         });
-        
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(Commons.WIDTH, Commons.HEIGHT);
-        setTitle("Pong!");
-        setLocationRelativeTo(null);
-        setResizable(false);
-        setVisible(true);
-    }
+        exit.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}	
+        });
 
-    public static void main(String[] args) {
-        
-    	 SwingUtilities.invokeLater(new Runnable() {
-             @Override
-             public void run() {
-            	 new MainGame();
-             }
-         });
     }
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		difficulty = e.getActionCommand();
-	}
 }
