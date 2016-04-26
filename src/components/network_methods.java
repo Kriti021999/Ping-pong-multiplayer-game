@@ -2,6 +2,7 @@ package components;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -17,8 +18,8 @@ public class network_methods implements Commons {
 	protected BufferedReader input;
 	protected String hostName;
 	protected String clientName;
-	private Socket socket;
-	private String ip;
+	Socket socket;
+	protected String ip;
 	private JFrame frame;
 	
 	public network_methods(Socket socket, String hostName, String clientName, BufferedReader input, BufferedWriter output) {
@@ -33,7 +34,6 @@ public class network_methods implements Commons {
 	public network_methods(String username,JFrame frame){
 		this.frame = frame;
 		this.hostName = username;
-		isHost = true;
 	}
 	
 	protected void start(){
@@ -41,6 +41,7 @@ public class network_methods implements Commons {
 	}
 	
 	public final void lookForPlayers() throws IOException{
+		isHost = true;
 		System.out.println("Waiting for a player to join");
 		//open server socket
 		ServerSocket ss = new ServerSocket(GAMEPORT);
@@ -63,6 +64,7 @@ public class network_methods implements Commons {
 	}
 	
 	public final void joinGame(String clientName, Socket socket) throws IOException{
+		isHost = false;
 		ip = socket.getInetAddress().getHostAddress();
 		this.socket = socket;
 		System.out.println("host ip is stored as: "+ip);
@@ -125,16 +127,23 @@ public class network_methods implements Commons {
 		return network_methods.getMessage(input, timeout);
 	}
 	
-	public void newConnection(){
-		try {
-	        socket = new Socket( ip, GAMEPORT);
-	        input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
-	        output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-	    } catch (UnknownHostException e) {	        
-	        e.printStackTrace();
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+	public String newGetMsg(int timeout) throws IOException{
+		socket = new Socket( ip, GAMEPORT);
+		DataInputStream input = new DataInputStream(socket.getInputStream());
+//		int count=0;
+//		int maxCount=timeout/100;
+//		while(!input.ready()) {
+//			System.out.println("input not ready");
+//			try{Thread.sleep(100);}catch(Exception e){}
+//			count++;
+//			//after 30 seconds just give up!
+//			if(count > maxCount){
+//				throw new IOException("Timed out after " + timeout + " milliseconds");
+//			}
+//		}
+		String in = input.readUTF();
+		System.out.println(in);
+		return in;
 	}
 }
 

@@ -8,7 +8,10 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -125,7 +128,8 @@ public class multiplayerBoard extends Board {
         	//System.out.println("mov rlsd:"+e.getKeyCode());
         	try {
         		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        			netMethods.sendMessage("mov rlsd:"+e.getKeyCode());
+					DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
+        			output.writeUTF("mov rlsd:"+e.getKeyCode());
         		}
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -139,7 +143,8 @@ public class multiplayerBoard extends Board {
         		user_paddle.keyPressed(e);
         		try {
         			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        				netMethods.sendMessage("mov prsd:"+e.getKeyCode());
+        				DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
+            			output.writeUTF("mov prsd:"+e.getKeyCode());
         			}
         		} catch (IOException ex) {
         			ex.printStackTrace();
@@ -158,10 +163,12 @@ public class multiplayerBoard extends Board {
 			public void run(){
 				String line;
 				try {
-					while((line = netMethods.getMessage(30000)) != null){
-						System.out.println("called");
-						int key = Integer.parseInt((line.split(":", 2)[1]));
-						if(line.contains("mov prsd")){
+					DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
+					while((line = input.readUTF()) != null){
+						int key = Integer.parseInt((line.substring(9,11)));
+						System.out.println("the line is :"+line);
+						if(line.contains("prsd")){
+							System.out.println("called");
 							if (key == KeyEvent.VK_LEFT) {
 					            otherPlyr.dx = -2;
 					        }
@@ -171,7 +178,7 @@ public class multiplayerBoard extends Board {
 					        }
 						}
 						else{
-							if(line.contains("mov rlsd")){
+							if(line.contains("rlsd")){
 								if (key == KeyEvent.VK_LEFT) {
 						            otherPlyr.dx = 0;
 						        }
