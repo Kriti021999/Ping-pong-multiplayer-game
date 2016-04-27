@@ -4,10 +4,8 @@ import javax.swing.JFrame;
 
 public class JFrameGame extends JFrame implements Commons {
 	
-	//private boolean isMultiplayer;
 	
-	public JFrameGame(boolean isMultiplayer) {
-		//this.isMultiplayer = isMultiplayer;
+	public JFrameGame() {
         initUI();
     }
 	

@@ -4,8 +4,8 @@ import java.awt.event.KeyEvent;
 
 public class userPaddle extends Paddle{
 
-	public userPaddle() {
-		super(1);
+	public userPaddle(int side) {
+		super(side);
 	}
 	
 	@Override
