@@ -6,8 +6,13 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
@@ -21,6 +26,7 @@ public class network_methods implements Commons {
 	Socket socket;
 	protected String ip;
 	private JFrame frame;
+	DatagramSocket toSocket;
 	
 	public network_methods(Socket socket, String hostName, String clientName, BufferedReader input, BufferedWriter output) {
 		this.socket = socket;
@@ -60,6 +66,9 @@ public class network_methods implements Commons {
 		//user sends their name back
 		clientName = getMessage(30000);
 		System.out.println("Player "+clientName+" has been found! Starting game.");
+		ss.close();
+		s.close();
+		this.toSocket = new DatagramSocket();
 		start();
 	}
 	
@@ -77,6 +86,8 @@ public class network_methods implements Commons {
 		System.out.println("Host: " + hostName);
 		output.write(clientName + "\n");
 		output.flush();
+		socket.close();
+		this.toSocket = new DatagramSocket(GAMEPORT);
 		start();
 	}
 	
@@ -84,19 +95,16 @@ public class network_methods implements Commons {
 		try {
 			input.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			output.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		try {
 			socket.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -127,23 +135,26 @@ public class network_methods implements Commons {
 		return network_methods.getMessage(input, timeout);
 	}
 	
-	public String newGetMsg(int timeout) throws IOException{
-		socket = new Socket( ip, GAMEPORT);
-		DataInputStream input = new DataInputStream(socket.getInputStream());
-//		int count=0;
-//		int maxCount=timeout/100;
-//		while(!input.ready()) {
-//			System.out.println("input not ready");
-//			try{Thread.sleep(100);}catch(Exception e){}
-//			count++;
-//			//after 30 seconds just give up!
-//			if(count > maxCount){
-//				throw new IOException("Timed out after " + timeout + " milliseconds");
-//			}
-//		}
-		String in = input.readUTF();
-		System.out.println(in);
-		return in;
+	//----------------**UDP Methods**------------------\\
+	
+	public String getUdpMessage() throws IOException{
+		DatagramPacket receivePacket = new DatagramPacket(new byte[11],11);
+		toSocket.receive(receivePacket);
+		return new String(receivePacket.getData(),0,receivePacket.getLength());
+	}
+		
+	public void sendUdpMessage(String message) throws IOException{
+		try {
+			byte[] sendBytes = message.getBytes("UTF-8");
+			DatagramPacket sendPacket = new DatagramPacket(sendBytes,sendBytes.length,InetAddress.getByName(ip),GAMEPORT);
+			toSocket.send(sendPacket);
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 }
 

@@ -128,8 +128,9 @@ public class multiplayerBoard extends Board {
         	//System.out.println("mov rlsd:"+e.getKeyCode());
         	try {
         		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-        			output.writeUTF("mov rlsd:"+e.getKeyCode());
+					/*DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
+        			output.writeUTF("mov rlsd:"+e.getKeyCode());*/
+        			netMethods.sendUdpMessage("mov rlsd:"+e.getKeyCode());
         		}
 			} catch (IOException ex) {
 				ex.printStackTrace();
@@ -143,8 +144,8 @@ public class multiplayerBoard extends Board {
         		user_paddle.keyPressed(e);
         		try {
         			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        				DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-            			output.writeUTF("mov prsd:"+e.getKeyCode());
+        				//DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
+            			netMethods.sendUdpMessage("mov prsd:"+e.getKeyCode());
         			}
         		} catch (IOException ex) {
         			ex.printStackTrace();
@@ -163,8 +164,8 @@ public class multiplayerBoard extends Board {
 			public void run(){
 				String line;
 				try {
-					DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
-					while((line = input.readUTF()) != null){
+					//DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
+					while((line = netMethods.getUdpMessage()) != null){
 						int key = Integer.parseInt((line.substring(9,11)));
 						System.out.println("the line is :"+line);
 						if(line.contains("prsd")){
