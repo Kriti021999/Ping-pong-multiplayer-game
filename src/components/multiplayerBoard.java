@@ -8,10 +8,9 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.Socket;
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,9 +38,7 @@ public class multiplayerBoard extends Board {
 		
 		life = new JLabel[2];
 		for(int i=0;i<2;i++){
-    		//score[i] = new JLabel("sc");
     		life[i] = new JLabel("lf");
-    		//add(score[i]);
     		add(life[i]);
     	}
 		System.out.println("addkeylistener");
@@ -59,7 +56,7 @@ public class multiplayerBoard extends Board {
 		life[1].setText(""+otherPlyr.life);
 		life[0].setText(""+user_paddle.life+" ::");
 		timer = new Timer();
-        timer.scheduleAtFixedRate(new mScheduleTask(), DELAY, PERIOD);
+        timer.scheduleAtFixedRate(new mScheduleTask(), (DELAY), PERIOD);
 	}
 	
 	@Override
@@ -73,12 +70,11 @@ public class multiplayerBoard extends Board {
 
         	g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
         			RenderingHints.VALUE_RENDER_QUALITY);
-
         	doDrawing(g2d);
         	g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
         	if(MainGame.isHost){
-        	g.drawString(String.valueOf(user_paddle.life), 290, 550);
-        	g.drawString(String.valueOf(otherPlyr.life), 290, 50);
+        		g.drawString(String.valueOf(user_paddle.life), 290, 550);
+        		g.drawString(String.valueOf(otherPlyr.life), 290, 50);
         	}
         	else{
         		g.drawString(String.valueOf(otherPlyr.life), 290, 550);
@@ -94,12 +90,16 @@ public class multiplayerBoard extends Board {
     }
 	
 	@Override
-	protected void doDrawing(Graphics g){
-		Graphics2D g2d = (Graphics2D) g;  
+	protected void doDrawing(Graphics2D g2d){
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
         g2d.drawImage(user_paddle.getImage(), user_paddle.getX(), user_paddle.getY(), user_paddle.getWidth(), user_paddle.getHeight(), this);
         g2d.drawImage(otherPlyr.getImage(), otherPlyr.getX(), otherPlyr.getY(), otherPlyr.getWidth(), otherPlyr.getHeight(), this);
 	}
+	
+	double roundTwoDecimals(double d) {
+		  DecimalFormat twoDForm = new DecimalFormat("###.##");
+		  return Double.valueOf(twoDForm.format(d));
+		}
 	
 	//TimerTask which modifies the multiplayer components initialized above.
 	private class mScheduleTask extends TimerTask {
@@ -112,103 +112,42 @@ public class multiplayerBoard extends Board {
         			paddlelose = ""+otherPlyr.side;
         		else if(user_paddle.life==0)
                 	paddlelose = ""+user_paddle.side;
-        		if(MainGame.isHost)
+        		if(MainGame.isHost){
         			ball.stop();
-        		//display paddle is losing
-        		//add(new JLabel(""+paddlelose));
+        		}
         	}
         	else{
-        		if(MainGame.isHost)
+        		if(MainGame.isHost){
         			ball.move();
-        		otherPlyr.move(ball);
+        		}
+        		//otherPlyr.move(ball);
         		new collision_ball_paddle(otherPlyr,ball);
-        		//score[i+1].setText(""+paddle.get(i).score);
         		life[1].setText(""+otherPlyr.life);
+        		
         		user_paddle.move(ball);
         		new collision_ball_paddle(user_paddle,ball);
-        		//score[0].setText(""+user_paddle.score);
         		life[0].setText(""+user_paddle.life+" ::");
         	}
            
             try {	
-    				//DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-            	     String sx = Double.toString(ball.x);
-            	     String sy = Double.toString(ball.y);
-            	     if(ball.x < 100){
-     					sx = "0"+ball.x;
-     				    }
-     					if(ball.y < 100){
-         				sy = "0"+ball.y;
-         				}
-    				if(MainGame.isHost)
-    				{   
-    					netMethods.sendUdpMessage("ball "+sx+" "+sy);
-    					
+    				if(MainGame.isHost){
+    					netMethods.sendUdpMessage("bal "+roundTwoDecimals(ball.x)+" "+roundTwoDecimals(ball.y));
     				}
-    				netMethods.sendUdpMessage("life " + user_paddle.life);
-                           sx = Double.toString(user_paddle.x);
-                           sy = Double.toString(user_paddle.y);
-    				 if(user_paddle.x < 100){
-    					sx = "0"+user_paddle.x;
-    				    }
-    					if(user_paddle.y < 100){
-        				sy = "0"+user_paddle.y;
-        				}
-        			netMethods.sendUdpMessage("padd "+sx+" "+sy);
+    				netMethods.sendUdpMessage("lif " + user_paddle.life);
+    				netMethods.sendUdpMessage("pad "+roundTwoDecimals(user_paddle.x)+" "+roundTwoDecimals(user_paddle.y));
     		} catch (IOException ex) {
-    			//ex.printStackTrace();
     			System.out.println("disconnected");
-//    			MainGame.difficulty = "medium";
-//    			if(replaced){
-//    				otherPlyr = new cpuPaddle(MainGame.isHost?3:1);
-//    				replaced = false;
-//    			}
-    			
+    			MainGame.difficulty = "medium";
+    			if(replaced){
+    				otherPlyr = new cpuPaddle(MainGame.isHost?3:1);
+    				replaced = false;
+    			}
     		}
             repaint();
         }
     }
 	
-/*//<<<<<<< HEAD
-	//A new key adapter which sends key-press events
-	private class MultAdapter extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        	user_paddle.keyReleased(e);
-        	//System.out.println("mov rlsd:"+e.getKeyCode());
-        	try {
-        		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-        			output.writeUTF("mov rlsd:"+e.getKeyCode());
-        			netMethods.sendUdpMessage("mov rlsd:"+e.getKeyCode());
-        		}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-        	//System.out.println("mov prsd:"+e.getKeyCode());
-        	if(playing){
-        		user_paddle.keyPressed(e);
-        		try {
-        			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        				//DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-            			netMethods.sendUdpMessage("mov prsd:"+e.getKeyCode());
-        			}
-        		} catch (IOException ex) {
-        			ex.printStackTrace();
-        		}
-        	}
-        }
-    }
-	*/
-//=======
-//>>>>>>> chandu1
 	public void multiplayer(){
-		//netMethods.newConnection();
 		multiplayerThread();
 	}
 	
@@ -217,31 +156,24 @@ public class multiplayerBoard extends Board {
 			public void run(){
 				String line;
 				try {
-//<<<<<<< HEAD
 					//DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
 					while((line = netMethods.getUdpMessage()) != null){
-						//int key = Integer.parseInt((line.substring(9,11)));
-//=======
-//					DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
-//					while((line = input.readUTF()) != null){
-//>>>>>>> chandu1
 						System.out.println("the line is :"+line);
-						if(line.contains("padd")){
+						if(line.contains("pad")){
 							String[] words = line.split(" ");
-							System.out.println("called");
 							otherPlyr.x = Double.parseDouble(words[1]);
 							otherPlyr.y = Double.parseDouble(words[2]);
 						}
-						else if(line.contains("ball")){
+						else if(line.contains("bal")){
 							if(!MainGame.isHost){
 								String[] words = line.split(" ");
 								ball.x = Double.parseDouble(words[1]);
 								ball.y = Double.parseDouble(words[2]);
 							}
 						}
-						else if(line.contains("life")){
+						else if(line.contains("lif")){
 							String[] words = line.split(" ");
-							otherPlyr.life = Integer.parseInt((line.substring(5)));
+							otherPlyr.life = Integer.parseInt(words[1]);
 						}
 					}
 				} catch (IOException e) {
@@ -260,7 +192,7 @@ public class multiplayerBoard extends Board {
 	        @Override
 	        public void keyPressed(KeyEvent e) {
 	            if(playing)
-	        	user_paddle.keyPressed(e);    	
+	            	user_paddle.keyPressed(e);    	
 	        }
 	    }
 	}

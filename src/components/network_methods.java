@@ -2,7 +2,6 @@ package components;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -27,6 +26,7 @@ public class network_methods implements Commons {
 	protected String ip;
 	private JFrame frame;
 	DatagramSocket toSocket;
+	DatagramSocket fromSocket;
 	
 	public network_methods(Socket socket, String hostName, String clientName, BufferedReader input, BufferedWriter output) {
 		this.socket = socket;
@@ -69,6 +69,7 @@ public class network_methods implements Commons {
 		ss.close();
 		s.close();
 		this.toSocket = new DatagramSocket();
+		this.fromSocket = new DatagramSocket(GAMEPORT-1);
 		start();
 	}
 	
@@ -87,7 +88,8 @@ public class network_methods implements Commons {
 		output.write(clientName + "\n");
 		output.flush();
 		socket.close();
-		this.toSocket = new DatagramSocket(GAMEPORT);
+		this.fromSocket = new DatagramSocket(GAMEPORT);
+		this.toSocket = new DatagramSocket();
 		start();
 	}
 	
@@ -139,14 +141,20 @@ public class network_methods implements Commons {
 	
 	public String getUdpMessage() throws IOException{
 		DatagramPacket receivePacket = new DatagramPacket(new byte[18],18);
-		toSocket.receive(receivePacket);
+		fromSocket.receive(receivePacket);
 		return new String(receivePacket.getData(),0,receivePacket.getLength());
 	}
 		
 	public void sendUdpMessage(String message) throws IOException{
 		try {
 			byte[] sendBytes = message.getBytes("UTF-8");
-			DatagramPacket sendPacket = new DatagramPacket(sendBytes,sendBytes.length,InetAddress.getByName(ip),GAMEPORT);
+			DatagramPacket sendPacket;
+			if (isHost){
+				sendPacket = new DatagramPacket(sendBytes,sendBytes.length,InetAddress.getByName(ip),GAMEPORT);
+			}
+			else{
+				sendPacket = new DatagramPacket(sendBytes,sendBytes.length,InetAddress.getByName(ip),GAMEPORT-1);
+			}
 			toSocket.send(sendPacket);
 		} catch (SocketException e) {
 			e.printStackTrace();

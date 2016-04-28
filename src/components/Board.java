@@ -120,8 +120,7 @@ public class Board extends JPanel implements ActionListener {
     	}
     }
 
-    protected void doDrawing(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;  
+    protected void doDrawing(Graphics2D g2d) {
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
         for(int i=0;i<noCPU;i++){
         	g2d.drawImage(paddle.get(i).getImage(), paddle.get(i).getX(), paddle.get(i).getY(), paddle.get(i).getWidth(), paddle.get(i).getHeight(), this);

@@ -26,14 +26,7 @@ public class Paddle extends Sprite implements Commons {
         resetState();
     }
 
-    public void move(Ball b) {    
-    	if(this.x >= 0 && this.x <= (WIDTH-this.i_width)){
-			this.x += this.dx;
-		}
-		else if(this.x<0)
-			this.x = 1;
-		else if(this.x > WIDTH-this.i_width)
-			this.x = WIDTH-this.i_width-1;
+    public void move(Ball b) {
     }
 
     private void resetState() {
