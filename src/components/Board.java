@@ -76,7 +76,7 @@ public class Board extends JPanel implements ActionListener {
     		else	
     			life[i].setText(""+pad.life+" ::");
     	}
-    	user_paddle = new userPaddle();
+    	user_paddle = new userPaddle(1);
     	//score[0].setText(""+user_paddle.score);
     	life[0].setText(""+user_paddle.life+" ::");
     	
