@@ -138,7 +138,7 @@ public class network_methods implements Commons {
 	//----------------**UDP Methods**------------------\\
 	
 	public String getUdpMessage() throws IOException{
-		DatagramPacket receivePacket = new DatagramPacket(new byte[11],11);
+		DatagramPacket receivePacket = new DatagramPacket(new byte[17],17);
 		toSocket.receive(receivePacket);
 		return new String(receivePacket.getData(),0,receivePacket.getLength());
 	}

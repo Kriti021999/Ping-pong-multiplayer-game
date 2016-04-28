@@ -1,6 +1,7 @@
 package components;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
@@ -10,6 +11,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -27,6 +29,7 @@ public class MainGame implements Commons,ActionListener{
 	JPanel controlPanel,mPlyrPanel;
 	JFrame frame;
 	network_methods netMethods;
+	public static boolean isHost = true;
 	
     /**
 	 * 
@@ -75,22 +78,23 @@ public class MainGame implements Commons,ActionListener{
         final JTextField ipText = new JTextField(17);
                
         host.addActionListener(new ActionListener(){
-
+        	
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				network_methods net = new network_methods(username,frame);
+				isHost = true;
 				try {
+					
 					net.lookForPlayers();	//Entry Point for the multi-player game when you're host
 				} catch (IOException ex) {
 					ex.printStackTrace();
 				}				
 			}
-        	
         });
         join.addActionListener(new ActionListener(){
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				isHost = false;
 				String ip = ipText.getText();
 				System.out.println("IP: "+ip);
 				connectToGame(ip);
@@ -147,15 +151,18 @@ public class MainGame implements Commons,ActionListener{
 				super.paintComponent(g);
 				g.setColor(Color.WHITE);
 				g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
-				g.drawString("Pong!", 250, 50);
+				g.drawString("Pong!", 250, 500);
 
 			}
 		};
-    	controlPanel.setLayout(new GridBagLayout());
+    	controlPanel.setLayout(new BoxLayout(controlPanel,BoxLayout.Y_AXIS));
     	controlPanel.setBackground(new Color(209,102,242,255));
     	JButton single = new JButton("Single");
+    	single.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton multiplayer = new JButton("Multiplayer");
+        multiplayer.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton exit = new JButton("Exit");
+        exit.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         final JRadioButton radEasy = new JRadioButton("Easy", true);
         radEasy.setActionCommand("easy");
@@ -219,7 +226,7 @@ public class MainGame implements Commons,ActionListener{
 				SwingUtilities.invokeLater(new Runnable(){
 					@Override
 					public void run() {
-						new JFrameGame(false);
+						new JFrameGame();
 					}
 				});
 			}

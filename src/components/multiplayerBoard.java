@@ -8,20 +8,21 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
+import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JLabel;
+
+import components.Board.TAdapter;
 
 @SuppressWarnings("serial")
 public class multiplayerBoard extends Board {
 	
 	Paddle otherPlyr;	
 	private boolean playing = true;
+	private boolean replaced = true;
 	network_methods netMethods;
 	
 	public multiplayerBoard(network_methods netMethods){
@@ -36,22 +37,23 @@ public class multiplayerBoard extends Board {
 		
 		life = new JLabel[2];
 		for(int i=0;i<2;i++){
-    		//score[i] = new JLabel("sc");
     		life[i] = new JLabel("lf");
-    		//add(score[i]);
     		add(life[i]);
     	}
 		System.out.println("addkeylistener");
-		//new key adapter attached
-		addKeyListener(new MultAdapter());
-		
+		addKeyListener(new TAdapter());
 		//game components initializing
 		ball = new Ball();
-		user_paddle = new userPaddle();
-		life[0].setText(""+user_paddle.life+" ::");
-		otherPlyr = new Paddle(3);
+		if(MainGame.isHost){
+			user_paddle = new userPaddle(1);
+			otherPlyr = new Paddle(3);
+		}
+		else{
+			user_paddle = new userPaddle(3);
+			otherPlyr = new Paddle(1);
+		}
 		life[1].setText(""+otherPlyr.life);
-		
+		life[0].setText(""+user_paddle.life+" ::");
 		timer = new Timer();
         timer.scheduleAtFixedRate(new mScheduleTask(), DELAY, PERIOD);
 	}
@@ -70,8 +72,14 @@ public class multiplayerBoard extends Board {
 
         	doDrawing(g2d);
         	g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+        	if(MainGame.isHost){
         	g.drawString(String.valueOf(user_paddle.life), 290, 550);
         	g.drawString(String.valueOf(otherPlyr.life), 290, 50);
+        	}
+        	else{
+        		g.drawString(String.valueOf(otherPlyr.life), 290, 550);
+            	g.drawString(String.valueOf(user_paddle.life), 290, 50);
+        	}
         	Toolkit.getDefaultToolkit().sync();
         }
         else{
@@ -89,6 +97,11 @@ public class multiplayerBoard extends Board {
         g2d.drawImage(otherPlyr.getImage(), otherPlyr.getX(), otherPlyr.getY(), otherPlyr.getWidth(), otherPlyr.getHeight(), this);
 	}
 	
+	double roundTwoDecimals(double d) {
+		  DecimalFormat twoDForm = new DecimalFormat("###.##");
+		  return Double.valueOf(twoDForm.format(d));
+		}
+	
 	//TimerTask which modifies the multiplayer components initialized above.
 	private class mScheduleTask extends TimerTask {
 
@@ -100,62 +113,41 @@ public class multiplayerBoard extends Board {
         			paddlelose = ""+otherPlyr.side;
         		else if(user_paddle.life==0)
                 	paddlelose = ""+user_paddle.side;
-        		ball.stop();
-        		//display paddle is losing
-        		//add(new JLabel(""+paddlelose));
+        		if(MainGame.isHost)
+        			ball.stop();
         	}
         	else{
-        		ball.move();
-        		otherPlyr.move(ball);
+        		if(MainGame.isHost)
+        			ball.move();
+        		
+        		//otherPlyr.move(ball);
         		new collision_ball_paddle(otherPlyr,ball);
-        		//score[i+1].setText(""+paddle.get(i).score);
         		life[1].setText(""+otherPlyr.life);
+        		
         		user_paddle.move(ball);
         		new collision_ball_paddle(user_paddle,ball);
-        		//score[0].setText(""+user_paddle.score);
         		life[0].setText(""+user_paddle.life+" ::");
         	}
+           
+            try {	
+    				if(MainGame.isHost)
+    					netMethods.sendUdpMessage("bal "+roundTwoDecimals(ball.x)+" "+roundTwoDecimals(ball.y));
+    				netMethods.sendUdpMessage("lif " + user_paddle.life);
+    				netMethods.sendUdpMessage("pad "+roundTwoDecimals(user_paddle.x)+" "+roundTwoDecimals(user_paddle.y));
+    		} catch (IOException ex) {
+    			System.out.println("disconnected");
+    			MainGame.difficulty = "medium";
+    			if(replaced){
+    				otherPlyr = new cpuPaddle(MainGame.isHost?3:1);
+    				replaced = false;
+    			}
+    			
+    		}
             repaint();
         }
     }
 	
-	//A new key adapter which sends key-press events
-	private class MultAdapter extends KeyAdapter {
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-        	user_paddle.keyReleased(e);
-        	//System.out.println("mov rlsd:"+e.getKeyCode());
-        	try {
-        		if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					/*DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-        			output.writeUTF("mov rlsd:"+e.getKeyCode());*/
-        			netMethods.sendUdpMessage("mov rlsd:"+e.getKeyCode());
-        		}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-        	//System.out.println("mov prsd:"+e.getKeyCode());
-        	if(playing){
-        		user_paddle.keyPressed(e);
-        		try {
-        			if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-        				//DataOutputStream output = new DataOutputStream(netMethods.socket.getOutputStream());
-            			netMethods.sendUdpMessage("mov prsd:"+e.getKeyCode());
-        			}
-        		} catch (IOException ex) {
-        			ex.printStackTrace();
-        		}
-        	}
-        }
-    }
-	
 	public void multiplayer(){
-		//netMethods.newConnection();
 		multiplayerThread();
 	}
 	
@@ -166,28 +158,22 @@ public class multiplayerBoard extends Board {
 				try {
 					//DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
 					while((line = netMethods.getUdpMessage()) != null){
-						int key = Integer.parseInt((line.substring(9,11)));
 						System.out.println("the line is :"+line);
-						if(line.contains("prsd")){
-							System.out.println("called");
-							if (key == KeyEvent.VK_LEFT) {
-					            otherPlyr.dx = -2;
-					        }
-
-					        if (key == KeyEvent.VK_RIGHT) {
-					        	otherPlyr.dx = 2;
-					        }
+						if(line.contains("pad")){
+							String[] words = line.split(" ");
+							otherPlyr.x = Double.parseDouble(words[1]);
+							otherPlyr.y = Double.parseDouble(words[2]);
 						}
-						else{
-							if(line.contains("rlsd")){
-								if (key == KeyEvent.VK_LEFT) {
-						            otherPlyr.dx = 0;
-						        }
-
-						        if (key == KeyEvent.VK_RIGHT) {
-						        	otherPlyr.dx = 0;
-						        }
+						else if(line.contains("bal")){
+							if(!MainGame.isHost){
+								String[] words = line.split(" ");
+								ball.x = Double.parseDouble(words[1]);
+								ball.y = Double.parseDouble(words[2]);
 							}
+						}
+						else if(line.contains("lif")){
+							String[] words = line.split(" ");
+							otherPlyr.life = Integer.parseInt(words[1]);
 						}
 					}
 				} catch (IOException e) {
@@ -196,4 +182,18 @@ public class multiplayerBoard extends Board {
 			}
 		}.start();
 	}
-}
+	 public class TAdapter extends KeyAdapter {
+
+	        @Override
+	        public void keyReleased(KeyEvent e) {
+	        	user_paddle.keyReleased(e);
+	        }
+
+	        @Override
+	        public void keyPressed(KeyEvent e) {
+	            if(playing)
+	            	user_paddle.keyPressed(e);    	
+	        }
+	    }
+	}
+
