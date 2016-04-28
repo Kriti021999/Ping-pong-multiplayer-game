@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
@@ -70,6 +71,7 @@ public class network_methods implements Commons {
 		s.close();
 		this.toSocket = new DatagramSocket();
 		this.fromSocket = new DatagramSocket(GAMEPORT-1);
+		this.fromSocket.setSoTimeout(10000);
 		start();
 	}
 	
@@ -81,7 +83,6 @@ public class network_methods implements Commons {
 		//establish streams
 		input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 		output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-		//figure out what game we're playing
 		String in = getMessage(input, 30000);
 		String hostName = in.substring(in.indexOf(' ')+1).trim();
 		System.out.println("Host: " + hostName);
@@ -89,26 +90,14 @@ public class network_methods implements Commons {
 		output.flush();
 		socket.close();
 		this.fromSocket = new DatagramSocket(GAMEPORT);
+		this.fromSocket.setSoTimeout(10000);
 		this.toSocket = new DatagramSocket();
 		start();
 	}
 	
 	public void exitGame() {
-		try {
-			input.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		toSocket.close();
+		fromSocket.close();
 	}
 	
 	public void sendMessage(String message) throws IOException {
@@ -139,10 +128,10 @@ public class network_methods implements Commons {
 	
 	//----------------**UDP Methods**------------------\\
 	
-	public String getUdpMessage() throws IOException{
-		DatagramPacket receivePacket = new DatagramPacket(new byte[18],18);
-		fromSocket.receive(receivePacket);
-		return new String(receivePacket.getData(),0,receivePacket.getLength());
+	public String getUdpMessage() throws IOException, SocketTimeoutException{
+			DatagramPacket receivePacket = new DatagramPacket(new byte[18],18);
+			fromSocket.receive(receivePacket);
+			return new String(receivePacket.getData(),0,receivePacket.getLength());	
 	}
 		
 	public void sendUdpMessage(String message) throws IOException{

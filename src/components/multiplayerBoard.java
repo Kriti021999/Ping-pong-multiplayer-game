@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -125,7 +126,7 @@ public class multiplayerBoard extends Board {
         		if(MainGame.isHost){
         			ball.move();
         		}
-        		//otherPlyr.move(ball);
+        		otherPlyr.move(ball);
         		new collision_ball_paddle(otherPlyr,ball);
         		life[1].setText(""+otherPlyr.life);
         		
@@ -164,7 +165,7 @@ public class multiplayerBoard extends Board {
 				try {
 					//DataInputStream input = new DataInputStream(netMethods.socket.getInputStream());
 					while((line = netMethods.getUdpMessage()) != null){
-						System.out.println("the line is :"+line);
+						//System.out.println("the line is :"+line);
 						if(line.contains("pad")){
 							String[] words = line.split(" ");
 							otherPlyr.x = Double.parseDouble(words[1]);
