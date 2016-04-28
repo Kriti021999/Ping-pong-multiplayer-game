@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -69,11 +71,26 @@ public class MainGame implements Commons,ActionListener{
         frame.setVisible(true);
     }
     
-    private void addMultiplayerMenu(){
-    	mPlyrPanel = new JPanel();
-        mPlyrPanel.setLayout(new BoxLayout(mPlyrPanel,BoxLayout.Y_AXIS));
-        JButton host = new JButton("host");
-        JButton join = new JButton("join");
+    @SuppressWarnings("serial")
+	private void addMultiplayerMenu(){
+    	mPlyrPanel = new JPanel(){
+    		public void paintComponent(Graphics g){
+				super.paintComponent(g);
+				g.setColor(new Color(255,255,255,128));
+				g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
+				for(int i=0;i<25;i++)
+				{g.drawString("Pong!",50, (i*150));
+				g.drawString("Pong!",300, (i*150));
+				g.drawString("Pong!",150, (i*150+90));
+				g.drawString("Pong!",400, (i*150+90));
+				}
+
+			}
+    	};
+    	mPlyrPanel.setLayout(new BoxLayout(mPlyrPanel,BoxLayout.Y_AXIS));
+        mPlyrPanel.setBackground(new Color(209,102,242,255));
+        JButton host = new JButton("Host");
+        JButton join = new JButton("Join");
         JLabel  iplabel= new JLabel("Enter IP:", JLabel.RIGHT);        
         final JTextField ipText = new JTextField();
         ipText.setColumns(15);
@@ -158,18 +175,24 @@ public class MainGame implements Commons,ActionListener{
 		controlPanel = new JPanel(){
 			public void paintComponent(Graphics g){
 				super.paintComponent(g);
-				g.setColor(Color.WHITE);
+				g.setColor(new Color(255,255,255,128));
 				g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
-				g.drawString("Pong!", 250, 500);
+				for(int i=0;i<25;i++)
+				{g.drawString("Pong!",50, (i*150));
+				g.drawString("Pong!",300, (i*150));
+				g.drawString("Pong!",150, (i*150+90));
+				g.drawString("Pong!",400, (i*150+90));
+				}
 
 			}
 		};
-    	controlPanel.setLayout(new BoxLayout(controlPanel,BoxLayout.Y_AXIS));
+    	controlPanel.setLayout(new GridBagLayout());
+    	GridBagConstraints c = new GridBagConstraints();
     	controlPanel.setBackground(new Color(209,102,242,255));
     	JButton single = new JButton("Single");
-    	single.setAlignmentX(Component.CENTER_ALIGNMENT);
+    	//single.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton multiplayer = new JButton("Multiplayer");
-        multiplayer.setAlignmentX(Component.CENTER_ALIGNMENT);
+       // multiplayer.setAlignmentX(Component.CENTER_ALIGNMENT);
         JButton exit = new JButton("Exit");
         exit.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -212,20 +235,46 @@ public class MainGame implements Commons,ActionListener{
         group.add(radEasy);
         group.add(radMedium);
         group.add(radHard);
+/*<<<<<<< HEAD
 
         controlPanel.add(single);
+=======*/
+        c.ipadx = 0; 
+        c.fill = GridBagConstraints.HORIZONTAL;
+        
+        c.ipady = 40;      //make this component tall
+        c.weightx = 0.0;
+        c.gridwidth = 5;
+        c.gridx = 0;
+        c.gridy = 2;
+        c.anchor = GridBagConstraints.CENTER;
+        c.insets = new Insets(0,0,0,0);
+        //>>>>>>> saurabh
+        controlPanel.add(single,c);
+        
         controlPanel.add(radEasy);
         controlPanel.add(radMedium);
         controlPanel.add(radHard); 
-        
         ButtonGroup no_of_player = new ButtonGroup();
         no_of_player.add(rad2);
         no_of_player.add(rad4);
         controlPanel.add(rad2);
         controlPanel.add(rad4);
-        
-        controlPanel.add(multiplayer);      
-        controlPanel.add(exit);
+        c.ipady = 40;      //make this component tall
+        c.weightx = 0.0;
+        c.gridwidth = 5;
+        c.gridx = 0;
+        c.gridy = 4;
+        controlPanel.add(multiplayer,c); 
+        c.ipady = 10;       //reset to default
+        c.ipadx = 50;
+        c.weighty = 1.0;   //request any extra vertical space
+        c.anchor = GridBagConstraints.PAGE_END; //bottom of space
+        c.insets = new Insets(10,0,0,0);  //top padding
+        c.gridx = 0;       //aligned with button 2
+        c.gridwidth = 1;   //2 columns wide
+        c.gridy = 5;       //third row
+        controlPanel.add(exit,c);
 
         frame.getContentPane().add(controlPanel);
         
