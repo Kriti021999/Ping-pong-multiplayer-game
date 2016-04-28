@@ -155,6 +155,7 @@ public class network_methods implements Commons {
 			else{
 				sendPacket = new DatagramPacket(sendBytes,sendBytes.length,InetAddress.getByName(ip),GAMEPORT-1);
 			}
+			System.out.println("sent");
 			toSocket.send(sendPacket);
 		} catch (SocketException e) {
 			e.printStackTrace();

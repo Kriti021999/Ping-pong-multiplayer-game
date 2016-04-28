@@ -8,6 +8,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -64,13 +65,15 @@ public class multiplayerBoard extends Board {
         super.paintComponent(g);
         if(playing){
         	Graphics2D g2d = (Graphics2D) g;
-
+        	if(!MainGame.isHost){
+        	int xRot = this.getWidth() / 2;
+    		int yRot = this.getHeight() / 2; 
+    		g2d.rotate(Math.toRadians(180), xRot, yRot);}
         	g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         			RenderingHints.VALUE_ANTIALIAS_ON);
 
         	g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
         			RenderingHints.VALUE_RENDER_QUALITY);
-        	doDrawing(g2d);
         	g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
         	if(MainGame.isHost){
         		g.drawString(String.valueOf(user_paddle.life), 290, 550);
@@ -79,8 +82,10 @@ public class multiplayerBoard extends Board {
         	else{
         		g.drawString(String.valueOf(otherPlyr.life), 290, 550);
             	g.drawString(String.valueOf(user_paddle.life), 290, 50);
+            	
         	}
         	Toolkit.getDefaultToolkit().sync();
+        	doDrawing(g2d);
         }
         else{
         	 g.setColor(Color.WHITE);
@@ -141,6 +146,7 @@ public class multiplayerBoard extends Board {
     			if(replaced){
     				otherPlyr = new cpuPaddle(MainGame.isHost?3:1);
     				replaced = false;
+    				MainGame.isHost = true;
     			}
     		}
             repaint();
@@ -177,7 +183,14 @@ public class multiplayerBoard extends Board {
 						}
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
+					System.out.println("disconnected");
+	    			MainGame.difficulty = "medium";
+	    			if(replaced){
+	    				otherPlyr = new cpuPaddle(MainGame.isHost?3:1);
+	    				replaced = false;
+	    				MainGame.isHost = true;
+	    			}
 				}
 			}
 		}.start();
