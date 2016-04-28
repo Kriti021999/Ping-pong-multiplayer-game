@@ -187,18 +187,21 @@ public class multiplayerBoard extends Board {
 			}
 		}.start();
 	}
-	 public class TAdapter extends KeyAdapter {
+	public class TAdapter extends KeyAdapter {
 
-	        @Override
-	        public void keyReleased(KeyEvent e) {
-	        	user_paddle.keyReleased(e);
-	        }
+        @Override
+        public void keyReleased(KeyEvent e) {
+        	user_paddle.keyReleased(e);
+        }
 
-	        @Override
-	        public void keyPressed(KeyEvent e) {
-	            if(playing)
-	        	user_paddle.keyPressed(e);    	
-	        }
-	    }
-	}
+        @Override
+        public void keyPressed(KeyEvent e) {
+        	user_paddle.keyPressed(e);    	
+        	int key = e.getKeyCode();
+        	 if (key == KeyEvent.VK_R) {
+                 new MainGame();
+             }
+        }
+    }
+}
 

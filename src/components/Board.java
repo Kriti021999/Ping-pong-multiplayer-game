@@ -1,4 +1,5 @@
 package components;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -42,7 +43,7 @@ public class Board extends JPanel implements ActionListener {
     private void initBoard() {
     	//score = new JLabel[noCPU+1];
         setFocusable(true);
-        setBackground(Color.cyan);
+        setBackground(new Color(171,143,228,255));
         gameInit();
     }
     
@@ -113,6 +114,8 @@ public class Board extends JPanel implements ActionListener {
     			Toolkit.getDefaultToolkit().sync();
     		}
     		else{
+    			g.setFont(new Font(Font.DIALOG, Font.BOLD, 18));
+    			g.drawString("Press R to replay", 100, 50);
     			g.setColor(Color.WHITE);
     			g.setFont(new Font(Font.DIALOG, Font.BOLD, 36));
     			g.drawString("Player "+paddlelose+" loses", 165, 250);
@@ -122,6 +125,21 @@ public class Board extends JPanel implements ActionListener {
 
     protected void doDrawing(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;  
+        
+        g.setColor(new Color(204,0,102,255));
+        g2d.fillOval(300-35,287-35, 70, 70);
+        g.setColor(new Color(109,67,192,255));
+        BasicStroke bs1 = new BasicStroke(3, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);
+        g2d.setStroke(bs1);
+        g2d.drawRect(1,1,597,575);
+        float[] dash = { 4f, 4f, 1f };
+        BasicStroke bs2 = new BasicStroke(1, BasicStroke.CAP_BUTT, 
+        	    BasicStroke.JOIN_ROUND, 1.0f, dash, 2f );
+        g2d.setStroke(bs2);
+        g2d.drawLine(20,20,300,287);
+        g2d.drawLine(20,555,300,287);
+        g2d.drawLine(580,20,300,287);
+        g2d.drawLine(580,555,300,287);
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
         for(int i=0;i<noCPU;i++){
         	g2d.drawImage(paddle.get(i).getImage(), paddle.get(i).getX(), paddle.get(i).getY(), paddle.get(i).getWidth(), paddle.get(i).getHeight(), this);
@@ -146,8 +164,6 @@ public class Board extends JPanel implements ActionListener {
             		ball.stop();
             		gameOver = true;
             		playing = false;
-            		//display paddle is losing
-            		//add(new JLabel(""+paddlelose));
             	}
             	else{
             		ball.move();
@@ -173,8 +189,8 @@ public class Board extends JPanel implements ActionListener {
             		else if(user_paddle.life==0)
                     	paddlelose = ""+user_paddle.side;
             		ball.stop();
-            		//display paddle is losing
-            		//add(new JLabel(""+paddlelose));
+            		gameOver = true;
+            		playing = false;
             	}
             	else{
             		ball.move();
@@ -213,8 +229,11 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if(playing)
         	user_paddle.keyPressed(e);    	
+        	int key = e.getKeyCode();
+        	 if (key == KeyEvent.VK_R||key == KeyEvent.VK_E) {
+                 new MainGame();
+             }
         }
     }
 }
