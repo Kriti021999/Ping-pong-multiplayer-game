@@ -71,11 +71,15 @@ public class MainGame implements Commons,ActionListener{
     
     private void addMultiplayerMenu(){
     	mPlyrPanel = new JPanel();
-        mPlyrPanel.setLayout(new GridBagLayout());
+        mPlyrPanel.setLayout(new BoxLayout(mPlyrPanel,BoxLayout.Y_AXIS));
         JButton host = new JButton("host");
         JButton join = new JButton("join");
         JLabel  iplabel= new JLabel("Enter IP:", JLabel.RIGHT);        
-        final JTextField ipText = new JTextField(17);
+        final JTextField ipText = new JTextField();
+        ipText.setColumns(15);
+        JLabel  nameLabel= new JLabel("Enter Name:", JLabel.RIGHT);        
+        final JTextField nameText = new JTextField();
+        ipText.setColumns(15);
                
         host.addActionListener(new ActionListener(){
         	
@@ -96,20 +100,25 @@ public class MainGame implements Commons,ActionListener{
 			public void actionPerformed(ActionEvent e) {
 				isHost = false;
 				String ip = ipText.getText();
+				String name = nameText.getText();
+				System.out.println("your name: "+name);
 				System.out.println("IP: "+ip);
-				connectToGame(ip);
+				connectToGame(ip,name);
 			}
         	
         });
         mPlyrPanel.add(host);
         mPlyrPanel.add(iplabel);
         mPlyrPanel.add(ipText);
+        mPlyrPanel.add(nameLabel);
+        mPlyrPanel.add(nameText);
         mPlyrPanel.add(join);
         frame.setVisible(true);
     }
     
-    public void connectToGame(String ip){
-		Socket s = null;
+    public void connectToGame(String ip, String name){
+		this.username = name;
+    	Socket s = null;
 		try {
 			s = new Socket(ip, GAMEPORT);
 		} catch (UnknownHostException e) {
@@ -196,14 +205,14 @@ public class MainGame implements Commons,ActionListener{
         difficulty.add(radEasy);
         difficulty.add(radMedium);
         difficulty.add(radHard);
-        								//=======
+        
         radHard.addActionListener(this);     
         	//Group the radio buttons.
         ButtonGroup group = new ButtonGroup();
         group.add(radEasy);
         group.add(radMedium);
         group.add(radHard);
-        								//>>>>>>> saurabh
+
         controlPanel.add(single);
         controlPanel.add(radEasy);
         controlPanel.add(radMedium);

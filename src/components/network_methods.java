@@ -83,7 +83,6 @@ public class network_methods implements Commons {
 		//establish streams
 		input = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 		output = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-		//figure out what game we're playing
 		String in = getMessage(input, 30000);
 		String hostName = in.substring(in.indexOf(' ')+1).trim();
 		System.out.println("Host: " + hostName);
@@ -97,21 +96,8 @@ public class network_methods implements Commons {
 	}
 	
 	public void exitGame() {
-		try {
-			input.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			output.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		toSocket.close();
+		fromSocket.close();
 	}
 	
 	public void sendMessage(String message) throws IOException {
