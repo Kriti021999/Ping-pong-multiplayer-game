@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
 import javax.swing.JFrame;
@@ -70,6 +71,7 @@ public class network_methods implements Commons {
 		s.close();
 		this.toSocket = new DatagramSocket();
 		this.fromSocket = new DatagramSocket(GAMEPORT-1);
+		this.fromSocket.setSoTimeout(10000);
 		start();
 	}
 	
@@ -89,6 +91,7 @@ public class network_methods implements Commons {
 		output.flush();
 		socket.close();
 		this.fromSocket = new DatagramSocket(GAMEPORT);
+		this.fromSocket.setSoTimeout(10000);
 		this.toSocket = new DatagramSocket();
 		start();
 	}
@@ -139,10 +142,10 @@ public class network_methods implements Commons {
 	
 	//----------------**UDP Methods**------------------\\
 	
-	public String getUdpMessage() throws IOException{
-		DatagramPacket receivePacket = new DatagramPacket(new byte[18],18);
-		fromSocket.receive(receivePacket);
-		return new String(receivePacket.getData(),0,receivePacket.getLength());
+	public String getUdpMessage() throws IOException, SocketTimeoutException{
+			DatagramPacket receivePacket = new DatagramPacket(new byte[18],18);
+			fromSocket.receive(receivePacket);
+			return new String(receivePacket.getData(),0,receivePacket.getLength());	
 	}
 		
 	public void sendUdpMessage(String message) throws IOException{
