@@ -32,6 +32,7 @@ public class MainGame implements Commons,ActionListener{
 	JFrame frame;
 	network_methods netMethods;
 	public static boolean isHost = true;
+	int playerNo;
 	
     /**
 	 * 
@@ -41,10 +42,12 @@ public class MainGame implements Commons,ActionListener{
         initUI();			//Actual game initialization
     }
 	
-	public MainGame(JFrame mFrame, network_methods netMethods) {
+	public MainGame(JFrame mFrame, network_methods netMethods, int PlayerNo, int noOfPlayers) {
 		this.isMultiPlayer = true;
 		this.frame = mFrame;
 		this.netMethods = netMethods;
+		this.playerNo = PlayerNo;
+		this.no_ofPlayer = Integer.toString(noOfPlayers);
         initUI();			//Actual game initialization
     }
 	
@@ -55,7 +58,7 @@ public class MainGame implements Commons,ActionListener{
     		addMainMenu();
     	}
     	else{
-    		multiplayerBoard mb = new multiplayerBoard(netMethods);
+    		multiplayerBoard mb = new multiplayerBoard(netMethods,this.playerNo,Integer.parseInt(no_ofPlayer));
     		mb.setFocusable(true);
     		mb.requestFocusInWindow();
     		frame.getContentPane().removeAll();
@@ -102,7 +105,7 @@ public class MainGame implements Commons,ActionListener{
         	
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				network_methods net = new network_methods(username,frame);
+				network_methods net = new network_methods(username,frame,Integer.parseInt(no_ofPlayer));
 				isHost = true;
 				try {
 					
@@ -148,7 +151,7 @@ public class MainGame implements Commons,ActionListener{
 			return;
 		}
 		try {
-			network_methods net = new network_methods(username, frame);
+			network_methods net = new network_methods(username, frame, Integer.parseInt(no_ofPlayer));
 			net.joinGame(username, s);
 		} catch (IOException e) {
 			e.printStackTrace();

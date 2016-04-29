@@ -27,9 +27,13 @@ public class multiplayerBoard extends Board {
 	private boolean playing = true;
 	private boolean replaced = true;
 	network_methods netMethods;
+	int playerNo, noOfPlayers;
 	
-	public multiplayerBoard(network_methods netMethods){
+	public multiplayerBoard(network_methods netMethods,int PlayerNo,int NoOfPlayers){
     	super();				//calls Board() to set window settings.
+    	System.out.println("multiplyr board call");
+    	this.playerNo = PlayerNo;
+    	this.noOfPlayers = NoOfPlayers;
 		this.netMethods = netMethods;	//provides the critical network link formed previously in MainGame.
 		this.isMultiplayer = true;
 		multiplayer();	//Thread to continuously read output stream.
