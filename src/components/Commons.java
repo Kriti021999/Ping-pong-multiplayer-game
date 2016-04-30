@@ -1,4 +1,5 @@
 package components;
+
 public interface Commons {
     
     public static final int WIDTH = 600;

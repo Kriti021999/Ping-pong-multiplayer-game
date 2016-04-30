@@ -31,9 +31,13 @@ public class multiplayerBoard extends Board {
 	private boolean replaced = true;
 	private boolean gameOver = false;
 	network_methods netMethods;
+	int playerNo, noOfPlayers;
 	
-	public multiplayerBoard(network_methods netMethods){
+	public multiplayerBoard(network_methods netMethods,int PlayerNo,int NoOfPlayers){
     	super();				//calls Board() to set window settings.
+    	System.out.println("multiplyr board call "+PlayerNo+" "+NoOfPlayers);
+    	this.playerNo = PlayerNo;
+    	this.noOfPlayers = NoOfPlayers;
 		this.netMethods = netMethods;	//provides the critical network link formed previously in MainGame.
 		this.isMultiplayer = true;
 		multiplayer();	//Thread to continuously read output stream.
@@ -88,7 +92,8 @@ public class multiplayerBoard extends Board {
         	if(!MainGame.isHost){
         	int xRot = this.getWidth() / 2;
     		int yRot = this.getHeight() / 2; 
-    		g2d.rotate(Math.toRadians(180), xRot, yRot);}
+    		//g2d.rotate(Math.toRadians(180), xRot, yRot);
+    		}
         	g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
         			RenderingHints.VALUE_ANTIALIAS_ON);
 
