@@ -84,7 +84,6 @@ public class MainGame implements Commons,ActionListener{
 				g.drawString("Pong!",150, (i*150+90));
 				g.drawString("Pong!",400, (i*150+90));
 				}
-
 			}
     	};
     	mPlyrPanel.setLayout(new BoxLayout(mPlyrPanel,BoxLayout.Y_AXIS));

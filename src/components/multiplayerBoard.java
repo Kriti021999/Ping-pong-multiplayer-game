@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -23,9 +24,12 @@ import components.Board.TAdapter;
 @SuppressWarnings("serial")
 public class multiplayerBoard extends Board {
 	
-	Paddle otherPlyr;	
+	Paddle otherPlyr;
+	int noCPU;
 	private boolean playing = true;
+	ArrayList<Paddle> otherPlyr2 = new ArrayList<Paddle>();
 	private boolean replaced = true;
+	private boolean gameOver = false;
 	network_methods netMethods;
 	
 	public multiplayerBoard(network_methods netMethods){
@@ -37,17 +41,32 @@ public class multiplayerBoard extends Board {
 	
 	@Override
 	protected void gameInit(){
+		if(MainGame.no_ofPlayer=="2")
+        	noCPU = 1;
+        else
+        	noCPU = 3;
 		
-		life = new JLabel[2];
-		for(int i=0;i<2;i++){
+		life = new JLabel[noCPU+1];
+		
+		for(int i=0;i<noCPU+1;i++){
     		life[i] = new JLabel("lf");
     		add(life[i]);
     	}
-		System.out.println("addkeylistener");
+		
 		addKeyListener(new TAdapter());
 		//game components initializing
 		ball = new Ball();
+		
 		if(MainGame.isHost){
+			for(int i=1;i<noCPU+1;i++){
+	    		Paddle pad;
+	    		if(noCPU == 1)
+	    			pad = new Paddle(i+2);
+	    		else
+	    			pad = new Paddle(i+1);
+	    		//otherPlyr2.add(pad);
+	    		life[i].setText(""+pad.life+" ::");
+	    	}
 			user_paddle = new userPaddle(1);
 			otherPlyr = new Paddle(3);
 		}
@@ -55,7 +74,7 @@ public class multiplayerBoard extends Board {
 			user_paddle = new userPaddle(3);
 			otherPlyr = new Paddle(1);
 		}
-		life[1].setText(""+otherPlyr.life);
+		//life[1].setText(""+otherPlyr.life);
 		life[0].setText(""+user_paddle.life+" ::");
 		timer = new Timer();
         timer.scheduleAtFixedRate(new mScheduleTask(), (DELAY), PERIOD);
@@ -99,6 +118,9 @@ public class multiplayerBoard extends Board {
 	protected void doDrawing(Graphics2D g2d){
         g2d.drawImage(ball.getImage(), ball.getX(), ball.getY(),ball.getWidth(), ball.getHeight(), this);
         g2d.drawImage(user_paddle.getImage(), user_paddle.getX(), user_paddle.getY(), user_paddle.getWidth(), user_paddle.getHeight(), this);
+        /*for(int i=0;i<noCPU;i++){
+        	g2d.drawImage(otherPlyr2.get(i).getImage(), otherPlyr2.get(i).getX(), otherPlyr2.get(i).getY(), otherPlyr2.get(i).getWidth(), otherPlyr2.get(i).getHeight(), this);
+        }*/
         g2d.drawImage(otherPlyr.getImage(), otherPlyr.getX(), otherPlyr.getY(), otherPlyr.getWidth(), otherPlyr.getHeight(), this);
 	}
 	
@@ -120,6 +142,8 @@ public class multiplayerBoard extends Board {
                 	paddlelose = ""+user_paddle.side;
         		if(MainGame.isHost){
         			ball.stop();
+        			gameOver = true;
+            		playing = false;
         		}
         	}
         	else{
@@ -207,7 +231,7 @@ public class multiplayerBoard extends Board {
         public void keyPressed(KeyEvent e) {
         	user_paddle.keyPressed(e);    	
         	int key = e.getKeyCode();
-        	 if (key == KeyEvent.VK_R) {
+        	 if (key == KeyEvent.VK_R||key == KeyEvent.VK_E) {
                  new MainGame();
              }
         }

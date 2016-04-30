@@ -53,7 +53,7 @@ public class Board extends JPanel implements ActionListener {
         	noCPU = 1;
         else
         	noCPU = 3;
-    	System.out.println(MainGame.no_ofPlayer);
+    	
     	life = new JLabel[noCPU+1];
     	for(int i=0;i<noCPU+1;i++){
     		//score[i] = new JLabel("sc");
@@ -63,6 +63,7 @@ public class Board extends JPanel implements ActionListener {
     	}
 
     	addKeyListener(new TAdapter());
+    	//game components initializing
     	ball = new Ball();
     	for(int i=1;i<noCPU+1;i++){
     		cpuPaddle pad;

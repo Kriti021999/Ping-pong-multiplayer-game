@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
@@ -144,7 +145,7 @@ public class network_methods implements Commons {
 			else{
 				sendPacket = new DatagramPacket(sendBytes,sendBytes.length,InetAddress.getByName(ip),GAMEPORT-1);
 			}
-			System.out.println("sent");
+			//System.out.println("sent");
 			toSocket.send(sendPacket);
 		} catch (SocketException e) {
 			e.printStackTrace();

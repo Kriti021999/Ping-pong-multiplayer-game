@@ -12,10 +12,10 @@ public class cpuPaddle extends Paddle{
 	public void move(Ball b) { 
 		double sp;
 		if(MainGame.difficulty == "hard"){
-    	    sp = 0.95 ;
+    	    sp = 0.95*1.6 ;
     	    }
         else if(MainGame.difficulty == "medium"){
-        	sp = 0.90 ;
+        	sp = 0.90*1.3 ;
         	}
         else{
             sp = 0.85 ;

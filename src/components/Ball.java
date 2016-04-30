@@ -23,9 +23,9 @@ public class Ball extends Sprite implements Commons {
     public void move() {
     	double speed;
         if(MainGame.difficulty == "hard")
-        	speed = 1;
+        	speed = 1.6;
         else if(MainGame.difficulty == "medium")
-        	speed = 1;
+        	speed = 1.3;
         else
         	speed = 1;
         x += (xdir*speed);
