@@ -20,3 +20,5 @@
 * if any one of paddle loses three lives,then game will be over and display that which paddle is lost
 
 ## Screenshot
+
+![alt text](ScreenShot.png)
