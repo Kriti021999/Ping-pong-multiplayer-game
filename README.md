@@ -1,5 +1,7 @@
 # Ping Pong - Networked Multiplayer Game
 
+[Doc.pdf](cop290-assignment3_Plan.pdf)
+
 ## How to Play
 
 * Download the whole repository
