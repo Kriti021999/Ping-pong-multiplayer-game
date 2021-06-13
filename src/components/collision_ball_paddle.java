@@ -19,23 +19,23 @@ public class collision_ball_paddle implements Commons{
 				if (pad.side==1){up_down = -1;}
 				else{up_down = 1;}
 
-				if( Math.abs(paddlePos-ballPos) < pad.i_width/5){
+				if( Math.abs(paddlePos-ballPos) < pad.width_i/5){
 					ball.setXDir(-1);
 					ball.setYDir(up_down);
 				}
-				else if (Math.abs(paddlePos-ballPos) > pad.i_width/5 && Math.abs(paddlePos-ballPos) < 2*pad.i_width/5){
+				else if (Math.abs(paddlePos-ballPos) > pad.width_i/5 && Math.abs(paddlePos-ballPos) < 2*pad.width_i/5){
 					ball.setXDir(-0.5);
 					ball.setYDir(up_down);
 				}    				
-				else if (Math.abs(paddlePos-ballPos) > 2*pad.i_width/5 && Math.abs(paddlePos-ballPos) < 3*pad.i_width/5){
+				else if (Math.abs(paddlePos-ballPos) > 2*pad.width_i/5 && Math.abs(paddlePos-ballPos) < 3*pad.width_i/5){
 					ball.setXDir(0.2);
 					ball.setYDir(up_down);
 				}
-				else if (Math.abs(paddlePos-ballPos) > 3*pad.i_width/5 && Math.abs(paddlePos-ballPos) < 4*pad.i_width/5){
+				else if (Math.abs(paddlePos-ballPos) > 3*pad.width_i/5 && Math.abs(paddlePos-ballPos) < 4*pad.width_i/5){
 					ball.setXDir(0.5);
 					ball.setYDir(up_down);
 				} 
-				else if (Math.abs(paddlePos-ballPos) > 4*pad.i_width/5 && Math.abs(paddlePos-ballPos) < pad.i_width){
+				else if (Math.abs(paddlePos-ballPos) > 4*pad.width_i/5 && Math.abs(paddlePos-ballPos) < pad.width_i){
 					ball.setXDir(1);
 					ball.setYDir(up_down);
 				} 
@@ -50,23 +50,23 @@ public class collision_ball_paddle implements Commons{
 				else{left_right = -1;}
 
 
-				if(Math.abs(paddlePos-ballPos) < pad.i_height/5){			
+				if(Math.abs(paddlePos-ballPos) < pad.height_i/5){			
 					ball.setYDir(-1);
 					ball.setXDir(left_right);
 				}    			
-				else if (Math.abs(paddlePos-ballPos) > pad.i_height/5 && Math.abs(paddlePos-ballPos) < 2*pad.i_height/5){				
+				else if (Math.abs(paddlePos-ballPos) > pad.height_i/5 && Math.abs(paddlePos-ballPos) < 2*pad.height_i/5){				
 					ball.setYDir(-0.5);
 					ball.setXDir(left_right);
 				}    				
-				else if (Math.abs(paddlePos-ballPos) > 2*pad.i_height/5 && Math.abs(paddlePos-ballPos) < 3*pad.i_height/5){
+				else if (Math.abs(paddlePos-ballPos) > 2*pad.height_i/5 && Math.abs(paddlePos-ballPos) < 3*pad.height_i/5){
 					ball.setYDir(0.2);
 					ball.setXDir(left_right);
 				}
-				else if (Math.abs(paddlePos-ballPos) > 3*pad.i_height/5 && Math.abs(paddlePos-ballPos) < 4*pad.i_height/5){    					
+				else if (Math.abs(paddlePos-ballPos) > 3*pad.height_i/5 && Math.abs(paddlePos-ballPos) < 4*pad.height_i/5){    					
 					ball.setYDir(0.5);
 					ball.setXDir(left_right);
 				}
-				else if (Math.abs(paddlePos-ballPos) > 4*pad.i_height/5 && Math.abs(paddlePos-ballPos) < 5*pad.i_height/5){			
+				else if (Math.abs(paddlePos-ballPos) > 4*pad.height_i/5 && Math.abs(paddlePos-ballPos) < 5*pad.height_i/5){			
 					ball.setYDir(1);
 					ball.setXDir(left_right);
 				}
@@ -75,7 +75,7 @@ public class collision_ball_paddle implements Commons{
 		}
 		//collision of ball with wall detection
 		if(pad.side==1){
-			if(ball.y >= HEIGHT - ball.i_height-30)
+			if(ball.y >= HEIGHT - ball.height_i-30)
 			{pad.life--;}
 		}
 		else if(pad.side==3)
@@ -88,7 +88,7 @@ public class collision_ball_paddle implements Commons{
 			{pad.life--;}
 		}
 		else if(pad.side == 4){
-			if(ball.x >= WIDTH - ball.i_width)
+			if(ball.x >= BREADTH - ball.width_i)
 			{pad.life--;}
 		}
 

@@ -12,7 +12,7 @@ public class JFrameGame extends JFrame implements Commons {
 	private void initUI() {
 			add(new Board());
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(Commons.WIDTH, Commons.HEIGHT);
+        setSize(Commons.BREADTH, Commons.HEIGHT);
         setTitle("Pong!");
         setLocationRelativeTo(null);
         setResizable(false);

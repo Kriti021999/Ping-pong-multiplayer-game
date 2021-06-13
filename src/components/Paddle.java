@@ -20,8 +20,8 @@ public class Paddle extends Sprite implements Commons {
     	}
         image = ii.getImage();
 
-        this.i_width = image.getWidth(null);
-        this.i_height = image.getHeight(null);
+        this.width_i = image.getWidth(null);
+        this.height_i = image.getHeight(null);
 
         resetState();
     }
@@ -31,7 +31,7 @@ public class Paddle extends Sprite implements Commons {
 
     private void resetState() {
     	if(side==1){			//down side
-    		this.x = WIDTH/2;
+    		this.x = BREADTH/2;
             this.y = HEIGHT-this.getHeight()-30;
     	}
     	if(side==2){			//left side
@@ -39,11 +39,11 @@ public class Paddle extends Sprite implements Commons {
             this.y = HEIGHT/2;
     	}
     	if(side==3){			//top side
-    		this.x = WIDTH/2;
+    		this.x = BREADTH/2;
     		this.y = 10;
     	}
     	if(side==4){			//right side
-    		this.x = WIDTH-this.getWidth()-30;
+    		this.x = BREADTH-this.getWidth()-30;
     		this.y = HEIGHT/2;
     	}
     	

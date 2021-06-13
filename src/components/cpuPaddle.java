@@ -30,8 +30,8 @@ public class cpuPaddle extends Paddle{
     		if (this.x <= 0) {
     			this.x = 0;
     		}
-    		if (this.x >= WIDTH - i_width) {
-    			this.x = WIDTH - i_width;
+    		if (this.x >= BREADTH - width_i) {
+    			this.x = BREADTH - width_i;
     		}
     		this.x += this.dx;
     	}
@@ -45,8 +45,8 @@ public class cpuPaddle extends Paddle{
     	        if (this.y <= 0) {
     	            this.y = 0;
     	        }
-    	        if (this.y >= HEIGHT - i_height-30) {
-    	            this.y = HEIGHT - i_height-30;
+    	        if (this.y >= HEIGHT - height_i-30) {
+    	            this.y = HEIGHT - height_i-30;
     	        }
     	    	this.y += this.dy;
     	}    	

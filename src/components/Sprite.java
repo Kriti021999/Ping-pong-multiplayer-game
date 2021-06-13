@@ -6,13 +6,9 @@ public class Sprite {
 
     protected double x;
     protected double y;
-    protected int i_width;
-    protected int i_height;
+    protected int width_i;
+    protected int height_i;
     protected Image image;
-
-    public void setX(double x) {
-        this.x = x;
-    }
 
     public int getX() {
     	Double a = new Double(x);
@@ -20,9 +16,10 @@ public class Sprite {
         return X;
     }
 
-    public void setY(double y) {
-        this.y = y;
+    public void setX(double xx) {
+        this.x = xx;
     }
+
 
     public int getY() {
     	Double a = new Double(y);
@@ -30,25 +27,31 @@ public class Sprite {
         return Y;
     }
 
-    public int getWidth() {
-        return i_width;
+    public void setY(double yy) {
+        this.y = yy;
     }
 
+
     public int getHeight() {
-        return i_height;
+        return height_i;
+    }
+
+    public int getWidth() {
+        return width_i;
+    }
+
+    Rectangle getRect() {
+        Double a = new Double(x);
+        int X = a.intValue();
+        Double b = new Double(y);
+        int Y = b.intValue();
+        return new Rectangle(X, Y,
+                image.getWidth(null), image.getHeight(null));
     }
 
     Image getImage() {
         return image;
     }
   
-    Rectangle getRect() {
-    	Double a = new Double(x);
-    	int X = a.intValue();
-    	Double b = new Double(y);
-    	int Y = b.intValue();
-        return new Rectangle(X, Y,
-                image.getWidth(null), image.getHeight(null));
-    }
    
 }

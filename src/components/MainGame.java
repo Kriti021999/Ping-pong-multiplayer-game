@@ -67,7 +67,7 @@ public class MainGame implements Commons,ActionListener{
 			frame.revalidate();
     	}
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(Commons.WIDTH, Commons.HEIGHT);
+        frame.setSize(Commons.BREADTH, Commons.HEIGHT);
         //frame.setTitle("Pong!");
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);

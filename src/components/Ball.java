@@ -14,8 +14,8 @@ public class Ball extends Sprite implements Commons {
         ImageIcon ii = new ImageIcon("ball.png");
         image = ii.getImage();
 
-        i_width = image.getWidth(null);
-        i_height = image.getHeight(null);
+        width_i = image.getWidth(null);
+        height_i = image.getHeight(null);
 
         resetState();
     }
@@ -39,13 +39,13 @@ public class Ball extends Sprite implements Commons {
             setXDir(1);
         }
 
-        if (x >= WIDTH - i_width) {
+        if (x >= BREADTH - width_i) {
             setXDir(-1);
         }
         if (y <= 0) {
             setYDir(1);
         }
-        if (y >= HEIGHT - i_height-30) {
+        if (y >= HEIGHT - height_i-30) {
             setYDir(-1);
         }
     }
