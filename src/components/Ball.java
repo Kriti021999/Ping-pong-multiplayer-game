@@ -3,36 +3,36 @@ import javax.swing.ImageIcon;
 
 public class Ball extends Sprite implements Commons {
 
-    private double xdir;
-    private double ydir;
+    private double x_dir;
+    private double y_dir;
 
     public Ball() {
 
-        xdir = 1;
-        ydir = -1;
+        x_dir = 1;
+        y_dir = -1;
 
         ImageIcon ii = new ImageIcon("ball.png");
         image = ii.getImage();
 
-        width_i = image.getWidth(null);
         height_i = image.getHeight(null);
-
+        width_i = image.getWidth(null);
+        
         resetState();
     }
 
     public void move() {
     	double speed;
         if(MainGame.difficulty == "hard")
-        	speed = 1.6;
+        	speed = 1.65;
         else if(MainGame.difficulty == "medium")
-        	speed = 1.3;
+        	speed = 1.35;
         else
         	speed = 1;
-        x += (xdir*speed);
-        y += (ydir*speed);
+        x += (x_dir*speed);
+        y += (y_dir*speed);
         
         /*
-        * Setting the direction of movement of the ball i.e., xdir and ydir
+        * Setting the direction of movement of the ball i.e., x_dir and y_dir
         * based on the collision condition with the wall
         */
         if (x <= 0) {
@@ -61,21 +61,21 @@ public class Ball extends Sprite implements Commons {
     }
 
     public void setXDir(double x) {
-        xdir = x;
+        x_dir = x;
     }
 
     public void setYDir(double y) {
-        ydir = y;
+        y_dir = y;
     }
 
     public int getYDir() {
-    	Double a = new Double(ydir);
+    	Double a = new Double(y_dir);
     	int Y = a.intValue();
         return Y;
     }
     
     public int getXDir() {
-    	Double a = new Double(xdir);
+    	Double a = new Double(x_dir);
     	int X = a.intValue();
         return X;
     }

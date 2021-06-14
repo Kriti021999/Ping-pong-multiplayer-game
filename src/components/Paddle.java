@@ -30,22 +30,22 @@ public class Paddle extends Sprite implements Commons {
     }
 
     private void resetState() {
-    	if(side==1){			//down side
-    		this.x = BREADTH/2;
-            this.y = HEIGHT-this.getHeight()-30;
-    	}
-    	if(side==2){			//left side
-    		this.x = 30;
-            this.y = HEIGHT/2;
-    	}
-    	if(side==3){			//top side
-    		this.x = BREADTH/2;
-    		this.y = 10;
-    	}
     	if(side==4){			//right side
     		this.x = BREADTH-this.getWidth()-30;
     		this.y = HEIGHT/2;
     	}
+        if(side==3){            //top side
+            this.x = BREADTH/2;
+            this.y = 10;
+        }
+        if(side==2){            //left side
+            this.x = 30;
+            this.y = HEIGHT/2;
+        }
+        if(side==1){            //down side
+            this.x = BREADTH/2;
+            this.y = HEIGHT-this.getHeight()-30;
+        }
     	
     }
 }
